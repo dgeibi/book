@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4. 返回值是指针的情况</title><link rel="stylesheet" href="styles.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.73.2" /><link rel="start" href="index.html" title="Linux C编程一站式学习" /><link rel="up" href="ch24.html" title="第 24 章 函数接口" /><link rel="prev" href="ch24s03.html" title="3. 两层指针的参数" /><link rel="next" href="ch24s05.html" title="5. 回调函数" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">4. 返回值是指针的情况</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch24s03.html">上一页</a> </td><th width="60%" align="center">第 24 章 函数接口</th><td width="20%" align="right"> <a accesskey="n" href="ch24s05.html">下一页</a></td></tr></table><hr /></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2821740"></a>4. 返回值是指针的情况</h2></div></div></div><p>返回值显然是传出的而不是传入的，如果返回值传出的是指针，和上一节通过参数传出指针类似，也分为两种情况：第一种是传出指向静态内存或已分配的动态内存的指针，例如<code class="literal">localtime(3)</code>和<code class="literal">inet_ntoa(3)</code>，第二种是在函数中动态分配内存并传出指向这块内存的指针，例如<code class="literal">malloc(3)</code>，这种情况通常还要实现一个释放内存的函数，所以有和<code class="literal">malloc(3)</code>对应的<code class="literal">free(3)</code>。由于这两种情况的函数接口相同，应该在文档中说明是哪一种情况。</p><div class="table"><a id="id2821786"></a><p class="title"><b>表 24.5. 返回指向已分配内存的指针示例<code class="literal">：unit_t *func(void);</code></b></p><div class="table-contents"><table summary="返回指向已分配内存的指针示例：unit_t *func(void);" border="1"><colgroup><col /><col /></colgroup><thead><tr><th>调用者</th><th>实现者</th></tr></thead><tbody><tr><td><div class="orderedlist"><ol type="1"><li><p>调用函数</p></li><li><p>将返回值保存下来以备后用</p></li></ol></div>
-</td><td><div class="orderedlist"><ol type="1"><li><p>规定返回值指针的类型<code class="literal">unit_t *</code></p></li><li><p>返回一个指针</p></li></ol></div>
-</td></tr></tbody></table></div></div><br class="table-break" /><p>以下是一个完整的例子。</p><div class="example"><a id="id2821862"></a><p class="title"><b>例 24.5. 返回指向已分配内存的指针</b></p><div class="example-contents"><pre class="programlisting">/* ret_ptr.h */
+<!--?xml version="1.0" encoding="UTF-8" standalone="no"?--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>4.&#xA0;&#x8FD4;&#x56DE;&#x503C;&#x662F;&#x6307;&#x9488;&#x7684;&#x60C5;&#x51B5;</title><link rel="stylesheet" href="styles.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="Linux C&#x7F16;&#x7A0B;&#x4E00;&#x7AD9;&#x5F0F;&#x5B66;&#x4E60;"><link rel="up" href="ch24.html" title="&#x7B2C;&#xA0;24&#xA0;&#x7AE0;&#xA0;&#x51FD;&#x6570;&#x63A5;&#x53E3;"><link rel="prev" href="ch24s03.html" title="3.&#xA0;&#x4E24;&#x5C42;&#x6307;&#x9488;&#x7684;&#x53C2;&#x6570;"><link rel="next" href="ch24s05.html" title="5.&#xA0;&#x56DE;&#x8C03;&#x51FD;&#x6570;"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">4.&#xA0;&#x8FD4;&#x56DE;&#x503C;&#x662F;&#x6307;&#x9488;&#x7684;&#x60C5;&#x51B5;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch24s03.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><th width="60%" align="center">&#x7B2C;&#xA0;24&#xA0;&#x7AE0;&#xA0;&#x51FD;&#x6570;&#x63A5;&#x53E3;</th><td width="20%" align="right">&#xA0;<a accesskey="n" href="ch24s05.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr></tbody></table><hr></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2821740"></a>4.&#xA0;&#x8FD4;&#x56DE;&#x503C;&#x662F;&#x6307;&#x9488;&#x7684;&#x60C5;&#x51B5;</h2></div></div></div><p>&#x8FD4;&#x56DE;&#x503C;&#x663E;&#x7136;&#x662F;&#x4F20;&#x51FA;&#x7684;&#x800C;&#x4E0D;&#x662F;&#x4F20;&#x5165;&#x7684;&#xFF0C;&#x5982;&#x679C;&#x8FD4;&#x56DE;&#x503C;&#x4F20;&#x51FA;&#x7684;&#x662F;&#x6307;&#x9488;&#xFF0C;&#x548C;&#x4E0A;&#x4E00;&#x8282;&#x901A;&#x8FC7;&#x53C2;&#x6570;&#x4F20;&#x51FA;&#x6307;&#x9488;&#x7C7B;&#x4F3C;&#xFF0C;&#x4E5F;&#x5206;&#x4E3A;&#x4E24;&#x79CD;&#x60C5;&#x51B5;&#xFF1A;&#x7B2C;&#x4E00;&#x79CD;&#x662F;&#x4F20;&#x51FA;&#x6307;&#x5411;&#x9759;&#x6001;&#x5185;&#x5B58;&#x6216;&#x5DF2;&#x5206;&#x914D;&#x7684;&#x52A8;&#x6001;&#x5185;&#x5B58;&#x7684;&#x6307;&#x9488;&#xFF0C;&#x4F8B;&#x5982;<code class="literal">localtime(3)</code>&#x548C;<code class="literal">inet_ntoa(3)</code>&#xFF0C;&#x7B2C;&#x4E8C;&#x79CD;&#x662F;&#x5728;&#x51FD;&#x6570;&#x4E2D;&#x52A8;&#x6001;&#x5206;&#x914D;&#x5185;&#x5B58;&#x5E76;&#x4F20;&#x51FA;&#x6307;&#x5411;&#x8FD9;&#x5757;&#x5185;&#x5B58;&#x7684;&#x6307;&#x9488;&#xFF0C;&#x4F8B;&#x5982;<code class="literal">malloc(3)</code>&#xFF0C;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x901A;&#x5E38;&#x8FD8;&#x8981;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x91CA;&#x653E;&#x5185;&#x5B58;&#x7684;&#x51FD;&#x6570;&#xFF0C;&#x6240;&#x4EE5;&#x6709;&#x548C;<code class="literal">malloc(3)</code>&#x5BF9;&#x5E94;&#x7684;<code class="literal">free(3)</code>&#x3002;&#x7531;&#x4E8E;&#x8FD9;&#x4E24;&#x79CD;&#x60C5;&#x51B5;&#x7684;&#x51FD;&#x6570;&#x63A5;&#x53E3;&#x76F8;&#x540C;&#xFF0C;&#x5E94;&#x8BE5;&#x5728;&#x6587;&#x6863;&#x4E2D;&#x8BF4;&#x660E;&#x662F;&#x54EA;&#x4E00;&#x79CD;&#x60C5;&#x51B5;&#x3002;</p><div class="table"><a id="id2821786"></a><p class="title"><b>&#x8868;&#xA0;24.5.&#xA0;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x5DF2;&#x5206;&#x914D;&#x5185;&#x5B58;&#x7684;&#x6307;&#x9488;&#x793A;&#x4F8B;<code class="literal">&#xFF1A;unit_t *func(void);</code></b></p><div class="table-contents"><table summary="&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x5DF2;&#x5206;&#x914D;&#x5185;&#x5B58;&#x7684;&#x6307;&#x9488;&#x793A;&#x4F8B;&#xFF1A;unit_t *func(void);" border="1"><colgroup><col><col></colgroup><thead><tr><th>&#x8C03;&#x7528;&#x8005;</th><th>&#x5B9E;&#x73B0;&#x8005;</th></tr></thead><tbody><tr><td><div class="orderedlist"><ol type="1"><li><p>&#x8C03;&#x7528;&#x51FD;&#x6570;</p></li><li><p>&#x5C06;&#x8FD4;&#x56DE;&#x503C;&#x4FDD;&#x5B58;&#x4E0B;&#x6765;&#x4EE5;&#x5907;&#x540E;&#x7528;</p></li></ol></div>
+</td><td><div class="orderedlist"><ol type="1"><li><p>&#x89C4;&#x5B9A;&#x8FD4;&#x56DE;&#x503C;&#x6307;&#x9488;&#x7684;&#x7C7B;&#x578B;<code class="literal">unit_t *</code></p></li><li><p>&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x9488;</p></li></ol></div>
+</td></tr></tbody></table></div></div><br class="table-break"><p>&#x4EE5;&#x4E0B;&#x662F;&#x4E00;&#x4E2A;&#x5B8C;&#x6574;&#x7684;&#x4F8B;&#x5B50;&#x3002;</p><div class="example"><a id="id2821862"></a><p class="title"><b>&#x4F8B;&#xA0;24.5.&#xA0;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x5DF2;&#x5206;&#x914D;&#x5185;&#x5B58;&#x7684;&#x6307;&#x9488;</b></p><div class="example-contents"><pre class="programlisting">/* ret_ptr.h */
 #ifndef RET_PTR_H
 #define RET_PTR_H
 
@@ -10,10 +8,10 @@ extern char *get_a_day(int idx);
 
 #endif</pre><pre class="programlisting">/* ret_ptr.c */
 #include &lt;string.h&gt;
-#include "ret_ptr.h"
+#include &quot;ret_ptr.h&quot;
 
-static const char *msg[] = {"Sunday", "Monday", "Tuesday", "Wednesday",
-			"Thursday", "Friday", "Saturday"};
+static const char *msg[] = {&quot;Sunday&quot;, &quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;,
+			&quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;};
 
 char *get_a_day(int idx)
 {
@@ -22,15 +20,15 @@ char *get_a_day(int idx)
      return buf;
 }</pre><pre class="programlisting">/* main.c */
 #include &lt;stdio.h&gt;
-#include "ret_ptr.h"
+#include &quot;ret_ptr.h&quot;
 
 int main(void)
 {
-     printf("%s %s\n", get_a_day(0), get_a_day(1));
+     printf(&quot;%s %s\n&quot;, get_a_day(0), get_a_day(1));
      return 0;
-}</pre></div></div><br class="example-break" /><p>这个程序的运行结果是<code class="literal">Sunday Monday</code>吗？请读者自己分析一下。</p><div class="table"><a id="id2821898"></a><p class="title"><b>表 24.6. 动态分配内存并返回指针示例：<code class="literal">unit_t *alloc_unit(void);</code> <code class="literal">void free_unit(unit_t *p)</code>;</b></p><div class="table-contents"><table summary="动态分配内存并返回指针示例：unit_t *alloc_unit(void); void free_unit(unit_t *p);" border="1"><colgroup><col /><col /></colgroup><thead><tr><th>调用者</th><th>实现者</th></tr></thead><tbody><tr><td><div class="orderedlist"><ol type="1"><li><p>调用<code class="literal">alloc_unit</code>分配内存</p></li><li><p>将返回值保存下来以备后用</p></li><li><p>调用<code class="literal">free_unit</code>释放内存</p></li></ol></div>
-</td><td><div class="orderedlist"><ol type="1"><li><p>规定返回值指针的类型<code class="literal">unit_t *</code></p></li><li><p><code class="literal">alloc_unit</code>分配内存并返回指向该内存的指针</p></li><li><p><code class="literal">free_unit</code>释放由<code class="literal">alloc_unit</code>分配的内存</p></li></ol></div>
-</td></tr></tbody></table></div></div><br class="table-break" /><p>以下是一个完整的例子。</p><div class="example"><a id="id2822019"></a><p class="title"><b>例 24.6. 动态分配内存并返回指针</b></p><div class="example-contents"><pre class="programlisting">/* ret_allocator.h */
+}</pre></div></div><br class="example-break"><p>&#x8FD9;&#x4E2A;&#x7A0B;&#x5E8F;&#x7684;&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x662F;<code class="literal">Sunday Monday</code>&#x5417;&#xFF1F;&#x8BF7;&#x8BFB;&#x8005;&#x81EA;&#x5DF1;&#x5206;&#x6790;&#x4E00;&#x4E0B;&#x3002;</p><div class="table"><a id="id2821898"></a><p class="title"><b>&#x8868;&#xA0;24.6.&#xA0;&#x52A8;&#x6001;&#x5206;&#x914D;&#x5185;&#x5B58;&#x5E76;&#x8FD4;&#x56DE;&#x6307;&#x9488;&#x793A;&#x4F8B;&#xFF1A;<code class="literal">unit_t *alloc_unit(void);</code> <code class="literal">void free_unit(unit_t *p)</code>;</b></p><div class="table-contents"><table summary="&#x52A8;&#x6001;&#x5206;&#x914D;&#x5185;&#x5B58;&#x5E76;&#x8FD4;&#x56DE;&#x6307;&#x9488;&#x793A;&#x4F8B;&#xFF1A;unit_t *alloc_unit(void); void free_unit(unit_t *p);" border="1"><colgroup><col><col></colgroup><thead><tr><th>&#x8C03;&#x7528;&#x8005;</th><th>&#x5B9E;&#x73B0;&#x8005;</th></tr></thead><tbody><tr><td><div class="orderedlist"><ol type="1"><li><p>&#x8C03;&#x7528;<code class="literal">alloc_unit</code>&#x5206;&#x914D;&#x5185;&#x5B58;</p></li><li><p>&#x5C06;&#x8FD4;&#x56DE;&#x503C;&#x4FDD;&#x5B58;&#x4E0B;&#x6765;&#x4EE5;&#x5907;&#x540E;&#x7528;</p></li><li><p>&#x8C03;&#x7528;<code class="literal">free_unit</code>&#x91CA;&#x653E;&#x5185;&#x5B58;</p></li></ol></div>
+</td><td><div class="orderedlist"><ol type="1"><li><p>&#x89C4;&#x5B9A;&#x8FD4;&#x56DE;&#x503C;&#x6307;&#x9488;&#x7684;&#x7C7B;&#x578B;<code class="literal">unit_t *</code></p></li><li><p><code class="literal">alloc_unit</code>&#x5206;&#x914D;&#x5185;&#x5B58;&#x5E76;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x8BE5;&#x5185;&#x5B58;&#x7684;&#x6307;&#x9488;</p></li><li><p><code class="literal">free_unit</code>&#x91CA;&#x653E;&#x7531;<code class="literal">alloc_unit</code>&#x5206;&#x914D;&#x7684;&#x5185;&#x5B58;</p></li></ol></div>
+</td></tr></tbody></table></div></div><br class="table-break"><p>&#x4EE5;&#x4E0B;&#x662F;&#x4E00;&#x4E2A;&#x5B8C;&#x6574;&#x7684;&#x4F8B;&#x5B50;&#x3002;</p><div class="example"><a id="id2822019"></a><p class="title"><b>&#x4F8B;&#xA0;24.6.&#xA0;&#x52A8;&#x6001;&#x5206;&#x914D;&#x5185;&#x5B58;&#x5E76;&#x8FD4;&#x56DE;&#x6307;&#x9488;</b></p><div class="example-contents"><pre class="programlisting">/* ret_allocator.h */
 #ifndef RET_ALLOCATOR_H
 #define RET_ALLOCATOR_H
 
@@ -46,18 +44,18 @@ extern void free_unit(unit_t *);
 #include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 #include &lt;stdlib.h&gt;
-#include "ret_allocator.h"
+#include &quot;ret_allocator.h&quot;
 
 unit_t *alloc_unit(void)
 {
      unit_t *p = malloc(sizeof(unit_t));
      if(p == NULL) {
-	  printf("out of memory\n");
+	  printf(&quot;out of memory\n&quot;);
 	  exit(1);
      }
      p-&gt;number = 3;
      p-&gt;msg = malloc(20);
-     strcpy(p-&gt;msg, "Hello world!");
+     strcpy(p-&gt;msg, &quot;Hello world!&quot;);
      return p;
 }
 
@@ -67,14 +65,15 @@ void free_unit(unit_t *p)
      free(p);
 }</pre><pre class="programlisting">/* main.c */
 #include &lt;stdio.h&gt;
-#include "ret_allocator.h"
+#include &quot;ret_allocator.h&quot;
 
 int main(void)
 {
      unit_t *p = alloc_unit();
 
-     printf("number: %d\nmsg: %s\n", p-&gt;number, p-&gt;msg);
+     printf(&quot;number: %d\nmsg: %s\n&quot;, p-&gt;number, p-&gt;msg);
      free_unit(p);
      p = NULL;
      return 0;
-}</pre></div></div><br class="example-break" /><p>思考一下，通过参数分配内存需要两层的指针，而通过返回值分配内存就只需要返回一层的指针，为什么？</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch24s03.html">上一页</a> </td><td width="20%" align="center"><a accesskey="u" href="ch24.html">上一级</a></td><td width="40%" align="right"> <a accesskey="n" href="ch24s05.html">下一页</a></td></tr><tr><td width="40%" align="left" valign="top">3. 两层指针的参数 </td><td width="20%" align="center"><a accesskey="h" href="index.html">起始页</a></td><td width="40%" align="right" valign="top"> 5. 回调函数</td></tr></table></div></body></html>
+}</pre></div></div><br class="example-break"><p>&#x601D;&#x8003;&#x4E00;&#x4E0B;&#xFF0C;&#x901A;&#x8FC7;&#x53C2;&#x6570;&#x5206;&#x914D;&#x5185;&#x5B58;&#x9700;&#x8981;&#x4E24;&#x5C42;&#x7684;&#x6307;&#x9488;&#xFF0C;&#x800C;&#x901A;&#x8FC7;&#x8FD4;&#x56DE;&#x503C;&#x5206;&#x914D;&#x5185;&#x5B58;&#x5C31;&#x53EA;&#x9700;&#x8981;&#x8FD4;&#x56DE;&#x4E00;&#x5C42;&#x7684;&#x6307;&#x9488;&#xFF0C;&#x4E3A;&#x4EC0;&#x4E48;&#xFF1F;</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="ch24s03.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><td width="20%" align="center"><a accesskey="u" href="ch24.html">&#x4E0A;&#x4E00;&#x7EA7;</a></td><td width="40%" align="right">&#xA0;<a accesskey="n" href="ch24s05.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr><tr><td width="40%" align="left" valign="top">3.&#xA0;&#x4E24;&#x5C42;&#x6307;&#x9488;&#x7684;&#x53C2;&#x6570;&#xA0;</td><td width="20%" align="center"><a accesskey="h" href="index.html">&#x8D77;&#x59CB;&#x9875;</a></td><td width="40%" align="right" valign="top">&#xA0;5.&#xA0;&#x56DE;&#x8C03;&#x51FD;&#x6570;</td></tr></tbody></table></div>
+</body></html>

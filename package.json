@@ -1,0 +1,18 @@
+{
+  "name": "book",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akaedu/book.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akaedu/book/issues"
+  },
+  "homepage": "https://github.com/akaedu/book#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2"
+  }
+}

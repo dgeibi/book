@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>2. 二叉树</title><link rel="stylesheet" href="styles.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.73.2" /><link rel="start" href="index.html" title="Linux C编程一站式学习" /><link rel="up" href="ch26.html" title="第 26 章 链表、二叉树和哈希表" /><link rel="prev" href="ch26s01.html" title="1. 链表" /><link rel="next" href="ch26s03.html" title="3. 哈希表" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. 二叉树</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch26s01.html">上一页</a> </td><th width="60%" align="center">第 26 章 链表、二叉树和哈希表</th><td width="20%" align="right"> <a accesskey="n" href="ch26s03.html">下一页</a></td></tr></table><hr /></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2845871"></a>2. 二叉树</h2></div></div></div><div class="sect2" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2845875"></a>2.1. 二叉树的基本概念</h3></div></div></div><p>链表的每个节点可以有一个后继，而二叉树（Binary Tree）<a id="id2845884" class="indexterm"></a>的每个节点可以有两个后继。比如这样定义二叉树的节点：</p><pre class="programlisting">typedef struct node *link;
+<!--?xml version="1.0" encoding="UTF-8" standalone="no"?--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>2.&#xA0;&#x4E8C;&#x53C9;&#x6811;</title><link rel="stylesheet" href="styles.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="Linux C&#x7F16;&#x7A0B;&#x4E00;&#x7AD9;&#x5F0F;&#x5B66;&#x4E60;"><link rel="up" href="ch26.html" title="&#x7B2C;&#xA0;26&#xA0;&#x7AE0;&#xA0;&#x94FE;&#x8868;&#x3001;&#x4E8C;&#x53C9;&#x6811;&#x548C;&#x54C8;&#x5E0C;&#x8868;"><link rel="prev" href="ch26s01.html" title="1.&#xA0;&#x94FE;&#x8868;"><link rel="next" href="ch26s03.html" title="3.&#xA0;&#x54C8;&#x5E0C;&#x8868;"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">2.&#xA0;&#x4E8C;&#x53C9;&#x6811;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch26s01.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><th width="60%" align="center">&#x7B2C;&#xA0;26&#xA0;&#x7AE0;&#xA0;&#x94FE;&#x8868;&#x3001;&#x4E8C;&#x53C9;&#x6811;&#x548C;&#x54C8;&#x5E0C;&#x8868;</th><td width="20%" align="right">&#xA0;<a accesskey="n" href="ch26s03.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr></tbody></table><hr></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2845871"></a>2.&#xA0;&#x4E8C;&#x53C9;&#x6811;</h2></div></div></div><div class="sect2" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2845875"></a>2.1.&#xA0;&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;</h3></div></div></div><p>&#x94FE;&#x8868;&#x7684;&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x53EF;&#x4EE5;&#x6709;&#x4E00;&#x4E2A;&#x540E;&#x7EE7;&#xFF0C;&#x800C;&#x4E8C;&#x53C9;&#x6811;&#xFF08;Binary Tree&#xFF09;<a id="id2845884" class="indexterm"></a>&#x7684;&#x6BCF;&#x4E2A;&#x8282;&#x70B9;&#x53EF;&#x4EE5;&#x6709;&#x4E24;&#x4E2A;&#x540E;&#x7EE7;&#x3002;&#x6BD4;&#x5982;&#x8FD9;&#x6837;&#x5B9A;&#x4E49;&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x8282;&#x70B9;&#xFF1A;</p><pre class="programlisting">typedef struct node *link;
 struct node {
 	unsigned char item;
 	link l, r;
-};</pre><p>这样的节点可以组织成下图所示的各种形态。</p><div class="figure"><a id="id2845902"></a><p class="title"><b>图 26.9. 二叉树的定义和举例</b></p><div class="figure-contents"><div><img src="images/linkedlist.binarytree.png" alt="二叉树的定义和举例" /></div></div></div><br class="figure-break" /><p>二叉树可以这样递归地定义：</p><div class="orderedlist"><ol type="1"><li><p>就像链表有头指针一样，每个二叉树都有一个根指针（上图中的<code class="literal">root</code>指针）指向它。根指针可以是<code class="literal">NULL</code>，表示空二叉树，或者</p></li><li><p>根指针可以指向一个节点，这个节点除了有数据成员之外还有两个指针域，这两个指针域又分别是另外两个二叉树（左子树和右子树）的根指针。</p></li></ol></div><p>上图举例示意了几种情况。</p><div class="itemizedlist"><ul type="disc"><li><p>单节点的二叉树：左子树和右子树都是空二叉树。</p></li><li><p>只有左子树的二叉树：右子树是空二叉树。</p></li><li><p>只有右子树的二叉树：左子树是空二叉树。</p></li><li><p>一般的二叉树：左右子树都不为空。注意右侧由圈和线段组成的简化图示，以后我们都采用这种简化图示法，在圈中标上该节点数据成员的值。</p></li></ul></div><p>链表的遍历方法是显而易见的：从前到后遍历即可。二叉树是一种树状结构，如何做到把所有节点都走一遍不重不漏呢？有以下几种方法：</p><div class="figure"><a id="id2845990"></a><p class="title"><b>图 26.10. 二叉树的遍历</b></p><div class="figure-contents"><div><img src="images/linkedlist.binarytraverse.png" alt="二叉树的遍历" /></div></div></div><br class="figure-break" /><p>前序（Pre-order Traversal）、中序（In-order Traversal）、后序遍历（Post-order Traversal）和深度优先搜索的顺序类似，层序遍历（Level-order Traversal）和广度优先搜索的顺序类似。</p><p>前序和中序遍历的结果合在一起可以唯一确定二叉树的形态，也就是说根据遍历结果可以构造出二叉树。过程如下图所示：</p><div class="figure"><a id="id2846022"></a><p class="title"><b>图 26.11. 根据前序和中序遍历结果构造二叉树</b></p><div class="figure-contents"><div><img src="images/linkedlist.constructbinary.png" alt="根据前序和中序遍历结果构造二叉树" /></div></div></div><br class="figure-break" /><p>想一想，根据中序和后序遍历结果能否构造二叉树？根据前序和后序遍历结果能否构造二叉树？</p><div class="example"><a id="id2846041"></a><p class="title"><b>例 26.3. 二叉树</b></p><div class="example-contents"><pre class="programlisting">/* binarytree.h */
+};</pre><p>&#x8FD9;&#x6837;&#x7684;&#x8282;&#x70B9;&#x53EF;&#x4EE5;&#x7EC4;&#x7EC7;&#x6210;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#x7684;&#x5404;&#x79CD;&#x5F62;&#x6001;&#x3002;</p><div class="figure"><a id="id2845902"></a><p class="title"><b>&#x56FE;&#xA0;26.9.&#xA0;&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x5B9A;&#x4E49;&#x548C;&#x4E3E;&#x4F8B;</b></p><div class="figure-contents"><div><img src="images/linkedlist.binarytree.png" alt="&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x5B9A;&#x4E49;&#x548C;&#x4E3E;&#x4F8B;"></div></div></div><br class="figure-break"><p>&#x4E8C;&#x53C9;&#x6811;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#x9012;&#x5F52;&#x5730;&#x5B9A;&#x4E49;&#xFF1A;</p><div class="orderedlist"><ol type="1"><li><p>&#x5C31;&#x50CF;&#x94FE;&#x8868;&#x6709;&#x5934;&#x6307;&#x9488;&#x4E00;&#x6837;&#xFF0C;&#x6BCF;&#x4E2A;&#x4E8C;&#x53C9;&#x6811;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x6839;&#x6307;&#x9488;&#xFF08;&#x4E0A;&#x56FE;&#x4E2D;&#x7684;<code class="literal">root</code>&#x6307;&#x9488;&#xFF09;&#x6307;&#x5411;&#x5B83;&#x3002;&#x6839;&#x6307;&#x9488;&#x53EF;&#x4EE5;&#x662F;<code class="literal">NULL</code>&#xFF0C;&#x8868;&#x793A;&#x7A7A;&#x4E8C;&#x53C9;&#x6811;&#xFF0C;&#x6216;&#x8005;</p></li><li><p>&#x6839;&#x6307;&#x9488;&#x53EF;&#x4EE5;&#x6307;&#x5411;&#x4E00;&#x4E2A;&#x8282;&#x70B9;&#xFF0C;&#x8FD9;&#x4E2A;&#x8282;&#x70B9;&#x9664;&#x4E86;&#x6709;&#x6570;&#x636E;&#x6210;&#x5458;&#x4E4B;&#x5916;&#x8FD8;&#x6709;&#x4E24;&#x4E2A;&#x6307;&#x9488;&#x57DF;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;&#x6307;&#x9488;&#x57DF;&#x53C8;&#x5206;&#x522B;&#x662F;&#x53E6;&#x5916;&#x4E24;&#x4E2A;&#x4E8C;&#x53C9;&#x6811;&#xFF08;&#x5DE6;&#x5B50;&#x6811;&#x548C;&#x53F3;&#x5B50;&#x6811;&#xFF09;&#x7684;&#x6839;&#x6307;&#x9488;&#x3002;</p></li></ol></div><p>&#x4E0A;&#x56FE;&#x4E3E;&#x4F8B;&#x793A;&#x610F;&#x4E86;&#x51E0;&#x79CD;&#x60C5;&#x51B5;&#x3002;</p><div class="itemizedlist"><ul type="disc"><li><p>&#x5355;&#x8282;&#x70B9;&#x7684;&#x4E8C;&#x53C9;&#x6811;&#xFF1A;&#x5DE6;&#x5B50;&#x6811;&#x548C;&#x53F3;&#x5B50;&#x6811;&#x90FD;&#x662F;&#x7A7A;&#x4E8C;&#x53C9;&#x6811;&#x3002;</p></li><li><p>&#x53EA;&#x6709;&#x5DE6;&#x5B50;&#x6811;&#x7684;&#x4E8C;&#x53C9;&#x6811;&#xFF1A;&#x53F3;&#x5B50;&#x6811;&#x662F;&#x7A7A;&#x4E8C;&#x53C9;&#x6811;&#x3002;</p></li><li><p>&#x53EA;&#x6709;&#x53F3;&#x5B50;&#x6811;&#x7684;&#x4E8C;&#x53C9;&#x6811;&#xFF1A;&#x5DE6;&#x5B50;&#x6811;&#x662F;&#x7A7A;&#x4E8C;&#x53C9;&#x6811;&#x3002;</p></li><li><p>&#x4E00;&#x822C;&#x7684;&#x4E8C;&#x53C9;&#x6811;&#xFF1A;&#x5DE6;&#x53F3;&#x5B50;&#x6811;&#x90FD;&#x4E0D;&#x4E3A;&#x7A7A;&#x3002;&#x6CE8;&#x610F;&#x53F3;&#x4FA7;&#x7531;&#x5708;&#x548C;&#x7EBF;&#x6BB5;&#x7EC4;&#x6210;&#x7684;&#x7B80;&#x5316;&#x56FE;&#x793A;&#xFF0C;&#x4EE5;&#x540E;&#x6211;&#x4EEC;&#x90FD;&#x91C7;&#x7528;&#x8FD9;&#x79CD;&#x7B80;&#x5316;&#x56FE;&#x793A;&#x6CD5;&#xFF0C;&#x5728;&#x5708;&#x4E2D;&#x6807;&#x4E0A;&#x8BE5;&#x8282;&#x70B9;&#x6570;&#x636E;&#x6210;&#x5458;&#x7684;&#x503C;&#x3002;</p></li></ul></div><p>&#x94FE;&#x8868;&#x7684;&#x904D;&#x5386;&#x65B9;&#x6CD5;&#x662F;&#x663E;&#x800C;&#x6613;&#x89C1;&#x7684;&#xFF1A;&#x4ECE;&#x524D;&#x5230;&#x540E;&#x904D;&#x5386;&#x5373;&#x53EF;&#x3002;&#x4E8C;&#x53C9;&#x6811;&#x662F;&#x4E00;&#x79CD;&#x6811;&#x72B6;&#x7ED3;&#x6784;&#xFF0C;&#x5982;&#x4F55;&#x505A;&#x5230;&#x628A;&#x6240;&#x6709;&#x8282;&#x70B9;&#x90FD;&#x8D70;&#x4E00;&#x904D;&#x4E0D;&#x91CD;&#x4E0D;&#x6F0F;&#x5462;&#xFF1F;&#x6709;&#x4EE5;&#x4E0B;&#x51E0;&#x79CD;&#x65B9;&#x6CD5;&#xFF1A;</p><div class="figure"><a id="id2845990"></a><p class="title"><b>&#x56FE;&#xA0;26.10.&#xA0;&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x904D;&#x5386;</b></p><div class="figure-contents"><div><img src="images/linkedlist.binarytraverse.png" alt="&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x904D;&#x5386;"></div></div></div><br class="figure-break"><p>&#x524D;&#x5E8F;&#xFF08;Pre-order Traversal&#xFF09;&#x3001;&#x4E2D;&#x5E8F;&#xFF08;In-order Traversal&#xFF09;&#x3001;&#x540E;&#x5E8F;&#x904D;&#x5386;&#xFF08;Post-order Traversal&#xFF09;&#x548C;&#x6DF1;&#x5EA6;&#x4F18;&#x5148;&#x641C;&#x7D22;&#x7684;&#x987A;&#x5E8F;&#x7C7B;&#x4F3C;&#xFF0C;&#x5C42;&#x5E8F;&#x904D;&#x5386;&#xFF08;Level-order Traversal&#xFF09;&#x548C;&#x5E7F;&#x5EA6;&#x4F18;&#x5148;&#x641C;&#x7D22;&#x7684;&#x987A;&#x5E8F;&#x7C7B;&#x4F3C;&#x3002;</p><p>&#x524D;&#x5E8F;&#x548C;&#x4E2D;&#x5E8F;&#x904D;&#x5386;&#x7684;&#x7ED3;&#x679C;&#x5408;&#x5728;&#x4E00;&#x8D77;&#x53EF;&#x4EE5;&#x552F;&#x4E00;&#x786E;&#x5B9A;&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x5F62;&#x6001;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#x6839;&#x636E;&#x904D;&#x5386;&#x7ED3;&#x679C;&#x53EF;&#x4EE5;&#x6784;&#x9020;&#x51FA;&#x4E8C;&#x53C9;&#x6811;&#x3002;&#x8FC7;&#x7A0B;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p><div class="figure"><a id="id2846022"></a><p class="title"><b>&#x56FE;&#xA0;26.11.&#xA0;&#x6839;&#x636E;&#x524D;&#x5E8F;&#x548C;&#x4E2D;&#x5E8F;&#x904D;&#x5386;&#x7ED3;&#x679C;&#x6784;&#x9020;&#x4E8C;&#x53C9;&#x6811;</b></p><div class="figure-contents"><div><img src="images/linkedlist.constructbinary.png" alt="&#x6839;&#x636E;&#x524D;&#x5E8F;&#x548C;&#x4E2D;&#x5E8F;&#x904D;&#x5386;&#x7ED3;&#x679C;&#x6784;&#x9020;&#x4E8C;&#x53C9;&#x6811;"></div></div></div><br class="figure-break"><p>&#x60F3;&#x4E00;&#x60F3;&#xFF0C;&#x6839;&#x636E;&#x4E2D;&#x5E8F;&#x548C;&#x540E;&#x5E8F;&#x904D;&#x5386;&#x7ED3;&#x679C;&#x80FD;&#x5426;&#x6784;&#x9020;&#x4E8C;&#x53C9;&#x6811;&#xFF1F;&#x6839;&#x636E;&#x524D;&#x5E8F;&#x548C;&#x540E;&#x5E8F;&#x904D;&#x5386;&#x7ED3;&#x679C;&#x80FD;&#x5426;&#x6784;&#x9020;&#x4E8C;&#x53C9;&#x6811;&#xFF1F;</p><div class="example"><a id="id2846041"></a><p class="title"><b>&#x4F8B;&#xA0;26.3.&#xA0;&#x4E8C;&#x53C9;&#x6811;</b></p><div class="example-contents"><pre class="programlisting">/* binarytree.h */
 #ifndef BINARYTREE_H
 #define BINARYTREE_H
 
@@ -24,7 +22,7 @@ void destroy(link t);
 
 #endif</pre><pre class="programlisting">/* binarytree.c */
 #include &lt;stdlib.h&gt;
-#include "binarytree.h"
+#include &quot;binarytree.h&quot;
 
 static link make_node(unsigned char item)
 {
@@ -101,11 +99,11 @@ void destroy(link t)
 	post_order(t, free_node);
 }</pre><pre class="programlisting">/* main.c */
 #include &lt;stdio.h&gt;
-#include "binarytree.h"
+#include &quot;binarytree.h&quot;
 
 void print_item(link p)
 {
-	printf("%d", p-&gt;item);
+	printf(&quot;%d&quot;, p-&gt;item);
 }
 
 int main()
@@ -114,19 +112,19 @@ int main()
 	unsigned char in_seq[] = { 1, 2, 3, 4, 5, 6, 7 };
 	link root = init(pre_seq, in_seq, 7);
 	pre_order(root, print_item);
-	putchar('\n');
+	putchar(&apos;\n&apos;);
 	in_order(root, print_item);
-	putchar('\n');
+	putchar(&apos;\n&apos;);
 	post_order(root, print_item);
-	putchar('\n');
-	printf("count=%d depth=%d\n", count(root), depth(root));
+	putchar(&apos;\n&apos;);
+	printf(&quot;count=%d depth=%d\n&quot;, count(root), depth(root));
 	destroy(root);
 	return 0;
-}</pre></div></div><br class="example-break" /><div class="simplesect" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h4 class="title"><a id="id2846092"></a>习题</h4></div></div></div><p>1、本节描述了二叉树的递归定义，想一想单链表的递归定义应该怎么表述？请仿照本节的例子用递归实现单链表的各种操作函数：</p><pre class="programlisting">link init(unsigned char elements[], int n);
+}</pre></div></div><br class="example-break"><div class="simplesect" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h4 class="title"><a id="id2846092"></a>&#x4E60;&#x9898;</h4></div></div></div><p>1&#x3001;&#x672C;&#x8282;&#x63CF;&#x8FF0;&#x4E86;&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x9012;&#x5F52;&#x5B9A;&#x4E49;&#xFF0C;&#x60F3;&#x4E00;&#x60F3;&#x5355;&#x94FE;&#x8868;&#x7684;&#x9012;&#x5F52;&#x5B9A;&#x4E49;&#x5E94;&#x8BE5;&#x600E;&#x4E48;&#x8868;&#x8FF0;&#xFF1F;&#x8BF7;&#x4EFF;&#x7167;&#x672C;&#x8282;&#x7684;&#x4F8B;&#x5B50;&#x7528;&#x9012;&#x5F52;&#x5B9E;&#x73B0;&#x5355;&#x94FE;&#x8868;&#x7684;&#x5404;&#x79CD;&#x64CD;&#x4F5C;&#x51FD;&#x6570;&#xFF1A;</p><pre class="programlisting">link init(unsigned char elements[], int n);
 void pre_order(link t, void (*visit)(link));
 void post_order(link t, void (*visit)(link));
 int count(link t);
-void destroy(link t);</pre></div></div><div class="sect2" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2846120"></a>2.2. 排序二叉树</h3></div></div></div><p>排序二叉树（BST，Binary Search Tree）<a id="id2846126" class="indexterm"></a>具有这样的性质：对于二叉树中的任意节点，如果它有左子树或右子树，则该节点的数据成员大于左子树所有节点的数据成员，且小于右子树所有节点的数据成员。排序二叉树的中序遍历结果是从小到大排列的，其实上一节的<a class="xref" href="ch26s02.html#linkedlist.binarytraverse">图 26.10 “二叉树的遍历”</a>就是排序二叉树。</p><div class="example"><a id="id2846146"></a><p class="title"><b>例 26.4. 排序二叉树</b></p><div class="example-contents"><pre class="programlisting">/* bst.h */
+void destroy(link t);</pre></div></div><div class="sect2" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2846120"></a>2.2.&#xA0;&#x6392;&#x5E8F;&#x4E8C;&#x53C9;&#x6811;</h3></div></div></div><p>&#x6392;&#x5E8F;&#x4E8C;&#x53C9;&#x6811;&#xFF08;BST&#xFF0C;Binary Search Tree&#xFF09;<a id="id2846126" class="indexterm"></a>&#x5177;&#x6709;&#x8FD9;&#x6837;&#x7684;&#x6027;&#x8D28;&#xFF1A;&#x5BF9;&#x4E8E;&#x4E8C;&#x53C9;&#x6811;&#x4E2D;&#x7684;&#x4EFB;&#x610F;&#x8282;&#x70B9;&#xFF0C;&#x5982;&#x679C;&#x5B83;&#x6709;&#x5DE6;&#x5B50;&#x6811;&#x6216;&#x53F3;&#x5B50;&#x6811;&#xFF0C;&#x5219;&#x8BE5;&#x8282;&#x70B9;&#x7684;&#x6570;&#x636E;&#x6210;&#x5458;&#x5927;&#x4E8E;&#x5DE6;&#x5B50;&#x6811;&#x6240;&#x6709;&#x8282;&#x70B9;&#x7684;&#x6570;&#x636E;&#x6210;&#x5458;&#xFF0C;&#x4E14;&#x5C0F;&#x4E8E;&#x53F3;&#x5B50;&#x6811;&#x6240;&#x6709;&#x8282;&#x70B9;&#x7684;&#x6570;&#x636E;&#x6210;&#x5458;&#x3002;&#x6392;&#x5E8F;&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x4E2D;&#x5E8F;&#x904D;&#x5386;&#x7ED3;&#x679C;&#x662F;&#x4ECE;&#x5C0F;&#x5230;&#x5927;&#x6392;&#x5217;&#x7684;&#xFF0C;&#x5176;&#x5B9E;&#x4E0A;&#x4E00;&#x8282;&#x7684;<a class="xref" href="ch26s02.html#linkedlist.binarytraverse">&#x56FE;&#xA0;26.10 &#x201C;&#x4E8C;&#x53C9;&#x6811;&#x7684;&#x904D;&#x5386;&#x201D;</a>&#x5C31;&#x662F;&#x6392;&#x5E8F;&#x4E8C;&#x53C9;&#x6811;&#x3002;</p><div class="example"><a id="id2846146"></a><p class="title"><b>&#x4F8B;&#xA0;26.4.&#xA0;&#x6392;&#x5E8F;&#x4E8C;&#x53C9;&#x6811;</b></p><div class="example-contents"><pre class="programlisting">/* bst.h */
 #ifndef BST_H
 #define BST_H
 
@@ -144,7 +142,7 @@ void print_tree(link t);
 #endif</pre><pre class="programlisting">/* bst.c */
 #include &lt;stdlib.h&gt;
 #include &lt;stdio.h&gt;
-#include "bst.h"
+#include &quot;bst.h&quot;
 
 static link make_node(unsigned char item)
 {
@@ -213,25 +211,25 @@ link delete(link t, unsigned char key)
 void print_tree(link t)
 {
 	if (t) {
-		printf("(");
-		printf("%d", t-&gt;item);
+		printf(&quot;(&quot;);
+		printf(&quot;%d&quot;, t-&gt;item);
 		print_tree(t-&gt;l);
 		print_tree(t-&gt;r);
-		printf(")");
+		printf(&quot;)&quot;);
 	} else
-		printf("()");
+		printf(&quot;()&quot;);
 }</pre><pre class="programlisting">/* main.c */
 #include &lt;stdio.h&gt;
 #include &lt;stdlib.h&gt;
 #include &lt;time.h&gt;
-#include "bst.h"
+#include &quot;bst.h&quot;
 
 #define RANGE 100
 #define N 6
 
 void print_item(link p)
 {
-	printf("%d", p-&gt;item);
+	printf(&quot;%d&quot;, p-&gt;item);
 }
 
 int main()
@@ -241,20 +239,20 @@ int main()
 	srand(time(NULL));
 	for (i = 0; i &lt; N; i++)
 		root = insert(root, rand() % RANGE);
-	printf("\t\\tree");
+	printf(&quot;\t\\tree&quot;);
 	print_tree(root);
-	printf("\n\n");
+	printf(&quot;\n\n&quot;);
 	while (root) {
 		key = rand() % RANGE;
 		if (search(root, key)) {
-			printf("delete %d in tree\n", key);
+			printf(&quot;delete %d in tree\n&quot;, key);
 			root = delete(root, key);
-			printf("\t\\tree");
+			printf(&quot;\t\\tree&quot;);
 			print_tree(root);
-			printf("\n\n");
+			printf(&quot;\n\n&quot;);
 		}
 	}
-}</pre></div></div><br class="example-break" /><pre class="screen">$ ./a.out
+}</pre></div></div><br class="example-break"><pre class="screen">$ ./a.out
 	\tree(83(77(15()(35()()))())(86()(93()())))
 
 delete 86 in tree
@@ -273,7 +271,7 @@ delete 83 in tree
 	\tree(77()())
 
 delete 77 in tree
-	\tree()</pre><p>程序的运行结果可以用Greg Lee编写的The Tree Preprocessor（<a class="ulink" href="http://www.essex.ac.uk/linguistics/clmt/latex4ling/trees/tree/" target="_top">http://www.essex.ac.uk/linguistics/clmt/latex4ling/trees/tree/</a>）转换成树形：</p><pre class="screen">$ ./a.out | ./tree/tree
+	\tree()</pre><p>&#x7A0B;&#x5E8F;&#x7684;&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x53EF;&#x4EE5;&#x7528;Greg Lee&#x7F16;&#x5199;&#x7684;The Tree Preprocessor&#xFF08;<a class="ulink" href="http://www.essex.ac.uk/linguistics/clmt/latex4ling/trees/tree/" target="_top">http://www.essex.ac.uk/linguistics/clmt/latex4ling/trees/tree/</a>&#xFF09;&#x8F6C;&#x6362;&#x6210;&#x6811;&#x5F62;&#xFF1A;</p><pre class="screen">$ ./a.out | ./tree/tree
 	     83
           ___|___
           |     |
@@ -336,4 +334,5 @@ delete 83 in tree
         _|__
         |  |
 
-delete 77 in tree</pre></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch26s01.html">上一页</a> </td><td width="20%" align="center"><a accesskey="u" href="ch26.html">上一级</a></td><td width="40%" align="right"> <a accesskey="n" href="ch26s03.html">下一页</a></td></tr><tr><td width="40%" align="left" valign="top">1. 链表 </td><td width="20%" align="center"><a accesskey="h" href="index.html">起始页</a></td><td width="40%" align="right" valign="top"> 3. 哈希表</td></tr></table></div></body></html>
+delete 77 in tree</pre></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="ch26s01.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><td width="20%" align="center"><a accesskey="u" href="ch26.html">&#x4E0A;&#x4E00;&#x7EA7;</a></td><td width="40%" align="right">&#xA0;<a accesskey="n" href="ch26s03.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr><tr><td width="40%" align="left" valign="top">1.&#xA0;&#x94FE;&#x8868;&#xA0;</td><td width="20%" align="center"><a accesskey="h" href="index.html">&#x8D77;&#x59CB;&#x9875;</a></td><td width="40%" align="right" valign="top">&#xA0;3.&#xA0;&#x54C8;&#x5E0C;&#x8868;</td></tr></tbody></table></div>
+</body></html>

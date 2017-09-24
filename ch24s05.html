@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5. 回调函数</title><link rel="stylesheet" href="styles.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.73.2" /><link rel="start" href="index.html" title="Linux C编程一站式学习" /><link rel="up" href="ch24.html" title="第 24 章 函数接口" /><link rel="prev" href="ch24s04.html" title="4. 返回值是指针的情况" /><link rel="next" href="ch24s06.html" title="6. 可变参数" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">5. 回调函数</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch24s04.html">上一页</a> </td><th width="60%" align="center">第 24 章 函数接口</th><td width="20%" align="right"> <a accesskey="n" href="ch24s06.html">下一页</a></td></tr></table><hr /></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2822058"></a>5. 回调函数</h2></div></div></div><p>如果参数是一个函数指针，调用者可以传递一个函数的地址给实现者，让实现者去调用它，这称为回调函数（Callback Function）<a id="id2822067" class="indexterm"></a>。例如<code class="literal">qsort(3)</code>和<code class="literal">bsearch(3)</code>。</p><div class="table"><a id="id2822087"></a><p class="title"><b>表 24.7. 回调函数示例：<code class="literal">void func(void (*f)(void *), void *p);</code></b></p><div class="table-contents"><table summary="回调函数示例：void func(void (*f)(void *), void *p);" border="1"><colgroup><col /><col /></colgroup><thead><tr><th>调用者</th><th>实现者</th></tr></thead><tbody><tr><td><div class="orderedlist"><ol type="1"><li><p>提供一个回调函数，再提供一个准备传给回调函数的参数。</p></li><li><p>把回调函数传给参数<code class="literal">f</code>，把准备传给回调函数的参数按<code class="literal">void *</code>类型传给参数<code class="literal">p</code></p></li></ol></div>
-</td><td><div class="orderedlist"><ol type="1"><li><p>在适当的时候根据调用者传来的函数指针<code class="literal">f</code>调用回调函数，将调用者传来的参数<code class="literal">p</code>转交给回调函数，即调用<code class="literal">f(p);</code></p></li></ol></div>
-</td></tr></tbody></table></div></div><br class="table-break" /><p>以下是一个简单的例子。实现了一个<code class="literal">repeat_three_times</code>函数，可以把调用者传来的任何回调函数连续执行三次。</p><div class="example"><a id="id2822196"></a><p class="title"><b>例 24.7. 回调函数</b></p><div class="example-contents"><pre class="programlisting">/* para_callback.h */
+<!--?xml version="1.0" encoding="UTF-8" standalone="no"?--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>5.&#xA0;&#x56DE;&#x8C03;&#x51FD;&#x6570;</title><link rel="stylesheet" href="styles.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="Linux C&#x7F16;&#x7A0B;&#x4E00;&#x7AD9;&#x5F0F;&#x5B66;&#x4E60;"><link rel="up" href="ch24.html" title="&#x7B2C;&#xA0;24&#xA0;&#x7AE0;&#xA0;&#x51FD;&#x6570;&#x63A5;&#x53E3;"><link rel="prev" href="ch24s04.html" title="4.&#xA0;&#x8FD4;&#x56DE;&#x503C;&#x662F;&#x6307;&#x9488;&#x7684;&#x60C5;&#x51B5;"><link rel="next" href="ch24s06.html" title="6.&#xA0;&#x53EF;&#x53D8;&#x53C2;&#x6570;"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">5.&#xA0;&#x56DE;&#x8C03;&#x51FD;&#x6570;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch24s04.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><th width="60%" align="center">&#x7B2C;&#xA0;24&#xA0;&#x7AE0;&#xA0;&#x51FD;&#x6570;&#x63A5;&#x53E3;</th><td width="20%" align="right">&#xA0;<a accesskey="n" href="ch24s06.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr></tbody></table><hr></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2822058"></a>5.&#xA0;&#x56DE;&#x8C03;&#x51FD;&#x6570;</h2></div></div></div><p>&#x5982;&#x679C;&#x53C2;&#x6570;&#x662F;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x6307;&#x9488;&#xFF0C;&#x8C03;&#x7528;&#x8005;&#x53EF;&#x4EE5;&#x4F20;&#x9012;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x7684;&#x5730;&#x5740;&#x7ED9;&#x5B9E;&#x73B0;&#x8005;&#xFF0C;&#x8BA9;&#x5B9E;&#x73B0;&#x8005;&#x53BB;&#x8C03;&#x7528;&#x5B83;&#xFF0C;&#x8FD9;&#x79F0;&#x4E3A;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#xFF08;Callback Function&#xFF09;<a id="id2822067" class="indexterm"></a>&#x3002;&#x4F8B;&#x5982;<code class="literal">qsort(3)</code>&#x548C;<code class="literal">bsearch(3)</code>&#x3002;</p><div class="table"><a id="id2822087"></a><p class="title"><b>&#x8868;&#xA0;24.7.&#xA0;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x793A;&#x4F8B;&#xFF1A;<code class="literal">void func(void (*f)(void *), void *p);</code></b></p><div class="table-contents"><table summary="&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x793A;&#x4F8B;&#xFF1A;void func(void (*f)(void *), void *p);" border="1"><colgroup><col><col></colgroup><thead><tr><th>&#x8C03;&#x7528;&#x8005;</th><th>&#x5B9E;&#x73B0;&#x8005;</th></tr></thead><tbody><tr><td><div class="orderedlist"><ol type="1"><li><p>&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#xFF0C;&#x518D;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x51C6;&#x5907;&#x4F20;&#x7ED9;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x7684;&#x53C2;&#x6570;&#x3002;</p></li><li><p>&#x628A;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x4F20;&#x7ED9;&#x53C2;&#x6570;<code class="literal">f</code>&#xFF0C;&#x628A;&#x51C6;&#x5907;&#x4F20;&#x7ED9;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x7684;&#x53C2;&#x6570;&#x6309;<code class="literal">void *</code>&#x7C7B;&#x578B;&#x4F20;&#x7ED9;&#x53C2;&#x6570;<code class="literal">p</code></p></li></ol></div>
+</td><td><div class="orderedlist"><ol type="1"><li><p>&#x5728;&#x9002;&#x5F53;&#x7684;&#x65F6;&#x5019;&#x6839;&#x636E;&#x8C03;&#x7528;&#x8005;&#x4F20;&#x6765;&#x7684;&#x51FD;&#x6570;&#x6307;&#x9488;<code class="literal">f</code>&#x8C03;&#x7528;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#xFF0C;&#x5C06;&#x8C03;&#x7528;&#x8005;&#x4F20;&#x6765;&#x7684;&#x53C2;&#x6570;<code class="literal">p</code>&#x8F6C;&#x4EA4;&#x7ED9;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#xFF0C;&#x5373;&#x8C03;&#x7528;<code class="literal">f(p);</code></p></li></ol></div>
+</td></tr></tbody></table></div></div><br class="table-break"><p>&#x4EE5;&#x4E0B;&#x662F;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x4F8B;&#x5B50;&#x3002;&#x5B9E;&#x73B0;&#x4E86;&#x4E00;&#x4E2A;<code class="literal">repeat_three_times</code>&#x51FD;&#x6570;&#xFF0C;&#x53EF;&#x4EE5;&#x628A;&#x8C03;&#x7528;&#x8005;&#x4F20;&#x6765;&#x7684;&#x4EFB;&#x4F55;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x8FDE;&#x7EED;&#x6267;&#x884C;&#x4E09;&#x6B21;&#x3002;</p><div class="example"><a id="id2822196"></a><p class="title"><b>&#x4F8B;&#xA0;24.7.&#xA0;&#x56DE;&#x8C03;&#x51FD;&#x6570;</b></p><div class="example-contents"><pre class="programlisting">/* para_callback.h */
 #ifndef PARA_CALLBACK_H
 #define PARA_CALLBACK_H
 
@@ -10,7 +8,7 @@ typedef void (*callback_t)(void *);
 extern void repeat_three_times(callback_t, void *);
 
 #endif</pre><pre class="programlisting">/* para_callback.c */
-#include "para_callback.h"
+#include &quot;para_callback.h&quot;
 
 void repeat_three_times(callback_t f, void *para)
 {
@@ -19,27 +17,27 @@ void repeat_three_times(callback_t f, void *para)
      f(para);
 }</pre><pre class="programlisting">/* main.c */
 #include &lt;stdio.h&gt;
-#include "para_callback.h"
+#include &quot;para_callback.h&quot;
 
 void say_hello(void *str)
 {
-     printf("Hello %s\n", (const char *)str);
+     printf(&quot;Hello %s\n&quot;, (const char *)str);
 }
 
 void count_numbers(void *num)
 {
      int i;
      for(i=1; i&lt;=(int)num; i++)
-	  printf("%d ", i);
-     putchar('\n');
+	  printf(&quot;%d &quot;, i);
+     putchar(&apos;\n&apos;);
 }
 
 int main(void)
 {
-     repeat_three_times(say_hello, "Guys");
+     repeat_three_times(say_hello, &quot;Guys&quot;);
      repeat_three_times(count_numbers, (void *)4);
      return 0;
-}</pre></div></div><br class="example-break" /><p>回顾一下前面几节的例子，参数类型都是由实现者规定的。而本例中回调函数的参数按什么类型解释由调用者规定，对于实现者来说就是一个<code class="literal">void *</code>指针，实现者只负责将这个指针转交给回调函数，而不关心它到底指向什么数据类型。调用者知道自己传的参数是<code class="literal">char *</code>型的，那么在自己提供的回调函数中就应该知道参数要转换成<code class="literal">char *</code>型来解释。</p><p>回调函数的一个典型应用就是实现类似C++的泛型算法（Generics Algorithm）<a id="id2822255" class="indexterm"></a>。下面实现的<code class="literal">max</code>函数可以在任意一组对象中找出最大值，可以是一组<code class="literal">int</code>、一组<code class="literal">char</code>或者一组结构体，但是实现者并不知道怎样去比较两个对象的大小，调用者需要提供一个做比较操作的回调函数。</p><div class="example"><a id="id2822285"></a><p class="title"><b>例 24.8. 泛型算法</b></p><div class="example-contents"><pre class="programlisting">/* generics.h */
+}</pre></div></div><br class="example-break"><p>&#x56DE;&#x987E;&#x4E00;&#x4E0B;&#x524D;&#x9762;&#x51E0;&#x8282;&#x7684;&#x4F8B;&#x5B50;&#xFF0C;&#x53C2;&#x6570;&#x7C7B;&#x578B;&#x90FD;&#x662F;&#x7531;&#x5B9E;&#x73B0;&#x8005;&#x89C4;&#x5B9A;&#x7684;&#x3002;&#x800C;&#x672C;&#x4F8B;&#x4E2D;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x7684;&#x53C2;&#x6570;&#x6309;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#x89E3;&#x91CA;&#x7531;&#x8C03;&#x7528;&#x8005;&#x89C4;&#x5B9A;&#xFF0C;&#x5BF9;&#x4E8E;&#x5B9E;&#x73B0;&#x8005;&#x6765;&#x8BF4;&#x5C31;&#x662F;&#x4E00;&#x4E2A;<code class="literal">void *</code>&#x6307;&#x9488;&#xFF0C;&#x5B9E;&#x73B0;&#x8005;&#x53EA;&#x8D1F;&#x8D23;&#x5C06;&#x8FD9;&#x4E2A;&#x6307;&#x9488;&#x8F6C;&#x4EA4;&#x7ED9;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#xFF0C;&#x800C;&#x4E0D;&#x5173;&#x5FC3;&#x5B83;&#x5230;&#x5E95;&#x6307;&#x5411;&#x4EC0;&#x4E48;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x3002;&#x8C03;&#x7528;&#x8005;&#x77E5;&#x9053;&#x81EA;&#x5DF1;&#x4F20;&#x7684;&#x53C2;&#x6570;&#x662F;<code class="literal">char *</code>&#x578B;&#x7684;&#xFF0C;&#x90A3;&#x4E48;&#x5728;&#x81EA;&#x5DF1;&#x63D0;&#x4F9B;&#x7684;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x4E2D;&#x5C31;&#x5E94;&#x8BE5;&#x77E5;&#x9053;&#x53C2;&#x6570;&#x8981;&#x8F6C;&#x6362;&#x6210;<code class="literal">char *</code>&#x578B;&#x6765;&#x89E3;&#x91CA;&#x3002;</p><p>&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x7684;&#x4E00;&#x4E2A;&#x5178;&#x578B;&#x5E94;&#x7528;&#x5C31;&#x662F;&#x5B9E;&#x73B0;&#x7C7B;&#x4F3C;C++&#x7684;&#x6CDB;&#x578B;&#x7B97;&#x6CD5;&#xFF08;Generics Algorithm&#xFF09;<a id="id2822255" class="indexterm"></a>&#x3002;&#x4E0B;&#x9762;&#x5B9E;&#x73B0;&#x7684;<code class="literal">max</code>&#x51FD;&#x6570;&#x53EF;&#x4EE5;&#x5728;&#x4EFB;&#x610F;&#x4E00;&#x7EC4;&#x5BF9;&#x8C61;&#x4E2D;&#x627E;&#x51FA;&#x6700;&#x5927;&#x503C;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;&#x4E00;&#x7EC4;<code class="literal">int</code>&#x3001;&#x4E00;&#x7EC4;<code class="literal">char</code>&#x6216;&#x8005;&#x4E00;&#x7EC4;&#x7ED3;&#x6784;&#x4F53;&#xFF0C;&#x4F46;&#x662F;&#x5B9E;&#x73B0;&#x8005;&#x5E76;&#x4E0D;&#x77E5;&#x9053;&#x600E;&#x6837;&#x53BB;&#x6BD4;&#x8F83;&#x4E24;&#x4E2A;&#x5BF9;&#x8C61;&#x7684;&#x5927;&#x5C0F;&#xFF0C;&#x8C03;&#x7528;&#x8005;&#x9700;&#x8981;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x505A;&#x6BD4;&#x8F83;&#x64CD;&#x4F5C;&#x7684;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x3002;</p><div class="example"><a id="id2822285"></a><p class="title"><b>&#x4F8B;&#xA0;24.8.&#xA0;&#x6CDB;&#x578B;&#x7B97;&#x6CD5;</b></p><div class="example-contents"><pre class="programlisting">/* generics.h */
 #ifndef GENERICS_H
 #define GENERICS_H
 
@@ -47,7 +45,7 @@ typedef int (*cmp_t)(void *, void *);
 extern void *max(void *data[], int num, cmp_t cmp);
 
 #endif</pre><pre class="programlisting">/* generics.c */
-#include "generics.h"
+#include &quot;generics.h&quot;
 
 void *max(void *data[], int num, cmp_t cmp)
 {
@@ -60,7 +58,7 @@ void *max(void *data[], int num, cmp_t cmp)
      return temp;
 }</pre><pre class="programlisting">/* main.c */
 #include &lt;stdio.h&gt;
-#include "generics.h"
+#include &quot;generics.h&quot;
 
 typedef struct {
      const char *name;
@@ -79,14 +77,14 @@ int cmp_student(void *a, void *b)
 
 int main(void)
 {
-     student_t list[4] = {{"Tom", 68}, {"Jerry", 72},
-		       {"Moby", 60}, {"Kirby", 89}};
+     student_t list[4] = {{&quot;Tom&quot;, 68}, {&quot;Jerry&quot;, 72},
+		       {&quot;Moby&quot;, 60}, {&quot;Kirby&quot;, 89}};
      student_t *plist[4] = {&amp;list[0], &amp;list[1], &amp;list[2], &amp;list[3]};
      student_t *pmax = max((void **)plist, 4, cmp_student);
-     printf("%s gets the highest score %d\n", pmax-&gt;name, pmax-&gt;score);
+     printf(&quot;%s gets the highest score %d\n&quot;, pmax-&gt;name, pmax-&gt;score);
 
      return 0;
-}</pre></div></div><br class="example-break" /><p><code class="literal">max</code>函数之所以能对一组任意类型的对象进行操作，关键在于传给<code class="literal">max</code>的是指向对象的指针所构成的数组，而不是对象本身所构成的数组，这样<code class="literal">max</code>不必关心对象到底是什么类型，只需转给比较函数<code class="literal">cmp</code>，然后根据比较结果做相应操作即可，<code class="literal">cmp</code>是调用者提供的回调函数，调用者当然知道对象是什么类型以及如何比较。</p><p>以上举例的回调函数是被同步调用的，调用者调用<code class="literal">max</code>函数，<code class="literal">max</code>函数则调用<code class="literal">cmp</code>函数，相当于调用者间接调了自己提供的回调函数。在实际系统中，异步调用也是回调函数的一种典型用法，调用者首先将回调函数传给实现者，实现者记住这个函数，这称为<span class="emphasis"><em>注册</em></span>一个回调函数，然后当某个事件发生时实现者再调用先前注册的函数，比如<code class="literal">sigaction(2)</code>注册一个信号处理函数，当信号产生时由系统调用该函数进行处理，再比如<code class="literal">pthread_create(3)</code>注册一个线程函数，当发生调度时系统切换到新注册的线程函数中运行，在GUI编程中异步回调函数更是有普遍的应用，例如为某个按钮注册一个回调函数，当用户点击按钮时调用它。</p><p>以下是一个代码框架。</p><pre class="programlisting">/* registry.h */
+}</pre></div></div><br class="example-break"><p><code class="literal">max</code>&#x51FD;&#x6570;&#x4E4B;&#x6240;&#x4EE5;&#x80FD;&#x5BF9;&#x4E00;&#x7EC4;&#x4EFB;&#x610F;&#x7C7B;&#x578B;&#x7684;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#xFF0C;&#x5173;&#x952E;&#x5728;&#x4E8E;&#x4F20;&#x7ED9;<code class="literal">max</code>&#x7684;&#x662F;&#x6307;&#x5411;&#x5BF9;&#x8C61;&#x7684;&#x6307;&#x9488;&#x6240;&#x6784;&#x6210;&#x7684;&#x6570;&#x7EC4;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5BF9;&#x8C61;&#x672C;&#x8EAB;&#x6240;&#x6784;&#x6210;&#x7684;&#x6570;&#x7EC4;&#xFF0C;&#x8FD9;&#x6837;<code class="literal">max</code>&#x4E0D;&#x5FC5;&#x5173;&#x5FC3;&#x5BF9;&#x8C61;&#x5230;&#x5E95;&#x662F;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#xFF0C;&#x53EA;&#x9700;&#x8F6C;&#x7ED9;&#x6BD4;&#x8F83;&#x51FD;&#x6570;<code class="literal">cmp</code>&#xFF0C;&#x7136;&#x540E;&#x6839;&#x636E;&#x6BD4;&#x8F83;&#x7ED3;&#x679C;&#x505A;&#x76F8;&#x5E94;&#x64CD;&#x4F5C;&#x5373;&#x53EF;&#xFF0C;<code class="literal">cmp</code>&#x662F;&#x8C03;&#x7528;&#x8005;&#x63D0;&#x4F9B;&#x7684;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#xFF0C;&#x8C03;&#x7528;&#x8005;&#x5F53;&#x7136;&#x77E5;&#x9053;&#x5BF9;&#x8C61;&#x662F;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#x4EE5;&#x53CA;&#x5982;&#x4F55;&#x6BD4;&#x8F83;&#x3002;</p><p>&#x4EE5;&#x4E0A;&#x4E3E;&#x4F8B;&#x7684;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x662F;&#x88AB;&#x540C;&#x6B65;&#x8C03;&#x7528;&#x7684;&#xFF0C;&#x8C03;&#x7528;&#x8005;&#x8C03;&#x7528;<code class="literal">max</code>&#x51FD;&#x6570;&#xFF0C;<code class="literal">max</code>&#x51FD;&#x6570;&#x5219;&#x8C03;&#x7528;<code class="literal">cmp</code>&#x51FD;&#x6570;&#xFF0C;&#x76F8;&#x5F53;&#x4E8E;&#x8C03;&#x7528;&#x8005;&#x95F4;&#x63A5;&#x8C03;&#x4E86;&#x81EA;&#x5DF1;&#x63D0;&#x4F9B;&#x7684;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x3002;&#x5728;&#x5B9E;&#x9645;&#x7CFB;&#x7EDF;&#x4E2D;&#xFF0C;&#x5F02;&#x6B65;&#x8C03;&#x7528;&#x4E5F;&#x662F;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x7684;&#x4E00;&#x79CD;&#x5178;&#x578B;&#x7528;&#x6CD5;&#xFF0C;&#x8C03;&#x7528;&#x8005;&#x9996;&#x5148;&#x5C06;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x4F20;&#x7ED9;&#x5B9E;&#x73B0;&#x8005;&#xFF0C;&#x5B9E;&#x73B0;&#x8005;&#x8BB0;&#x4F4F;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#xFF0C;&#x8FD9;&#x79F0;&#x4E3A;<span class="emphasis"><em>&#x6CE8;&#x518C;</em></span>&#x4E00;&#x4E2A;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#xFF0C;&#x7136;&#x540E;&#x5F53;&#x67D0;&#x4E2A;&#x4E8B;&#x4EF6;&#x53D1;&#x751F;&#x65F6;&#x5B9E;&#x73B0;&#x8005;&#x518D;&#x8C03;&#x7528;&#x5148;&#x524D;&#x6CE8;&#x518C;&#x7684;&#x51FD;&#x6570;&#xFF0C;&#x6BD4;&#x5982;<code class="literal">sigaction(2)</code>&#x6CE8;&#x518C;&#x4E00;&#x4E2A;&#x4FE1;&#x53F7;&#x5904;&#x7406;&#x51FD;&#x6570;&#xFF0C;&#x5F53;&#x4FE1;&#x53F7;&#x4EA7;&#x751F;&#x65F6;&#x7531;&#x7CFB;&#x7EDF;&#x8C03;&#x7528;&#x8BE5;&#x51FD;&#x6570;&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF0C;&#x518D;&#x6BD4;&#x5982;<code class="literal">pthread_create(3)</code>&#x6CE8;&#x518C;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x51FD;&#x6570;&#xFF0C;&#x5F53;&#x53D1;&#x751F;&#x8C03;&#x5EA6;&#x65F6;&#x7CFB;&#x7EDF;&#x5207;&#x6362;&#x5230;&#x65B0;&#x6CE8;&#x518C;&#x7684;&#x7EBF;&#x7A0B;&#x51FD;&#x6570;&#x4E2D;&#x8FD0;&#x884C;&#xFF0C;&#x5728;GUI&#x7F16;&#x7A0B;&#x4E2D;&#x5F02;&#x6B65;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#x66F4;&#x662F;&#x6709;&#x666E;&#x904D;&#x7684;&#x5E94;&#x7528;&#xFF0C;&#x4F8B;&#x5982;&#x4E3A;&#x67D0;&#x4E2A;&#x6309;&#x94AE;&#x6CE8;&#x518C;&#x4E00;&#x4E2A;&#x56DE;&#x8C03;&#x51FD;&#x6570;&#xFF0C;&#x5F53;&#x7528;&#x6237;&#x70B9;&#x51FB;&#x6309;&#x94AE;&#x65F6;&#x8C03;&#x7528;&#x5B83;&#x3002;</p><p>&#x4EE5;&#x4E0B;&#x662F;&#x4E00;&#x4E2A;&#x4EE3;&#x7801;&#x6846;&#x67B6;&#x3002;</p><pre class="programlisting">/* registry.h */
 #ifndef REGISTRY_H
 #define REGISTRY_H
 
@@ -95,7 +93,7 @@ extern void register_func(registry_t);
 
 #endif</pre><pre class="programlisting">/* registry.c */
 #include &lt;unistd.h&gt;
-#include "registry.h"
+#include &quot;registry.h&quot;
 
 static registry_t func;
 
@@ -109,4 +107,5 @@ static void on_some_event(void)
      ...
      func();
      ...
-}</pre><p>既然参数可以是函数指针，返回值同样也可以是函数指针，因此可以有<code class="literal">func()();</code>这样的调用。返回函数的函数在C语言中很少见，在一些函数式编程语言（例如LISP）中则很常见，基本思想是把函数也当作一种数据来操作，输入、输出和参与运算，操作函数的函数称为高阶函数（High-order Function）<a id="id2822434" class="indexterm"></a>。</p><div class="simplesect" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2822441"></a>习题</h3></div></div></div><p>1、<a class="xref" href="bi01.html#bibli.kr" title="The C Programming Language">[<abbr class="abbrev">K&amp;R</abbr>]</a>的5.6节有一个<code class="literal">qsort</code>函数的实现，可以对一组任意类型的对象做快速排序。请读者仿照那个例子，写一个插入排序的函数和一个折半查找的函数。</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch24s04.html">上一页</a> </td><td width="20%" align="center"><a accesskey="u" href="ch24.html">上一级</a></td><td width="40%" align="right"> <a accesskey="n" href="ch24s06.html">下一页</a></td></tr><tr><td width="40%" align="left" valign="top">4. 返回值是指针的情况 </td><td width="20%" align="center"><a accesskey="h" href="index.html">起始页</a></td><td width="40%" align="right" valign="top"> 6. 可变参数</td></tr></table></div></body></html>
+}</pre><p>&#x65E2;&#x7136;&#x53C2;&#x6570;&#x53EF;&#x4EE5;&#x662F;&#x51FD;&#x6570;&#x6307;&#x9488;&#xFF0C;&#x8FD4;&#x56DE;&#x503C;&#x540C;&#x6837;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x51FD;&#x6570;&#x6307;&#x9488;&#xFF0C;&#x56E0;&#x6B64;&#x53EF;&#x4EE5;&#x6709;<code class="literal">func()();</code>&#x8FD9;&#x6837;&#x7684;&#x8C03;&#x7528;&#x3002;&#x8FD4;&#x56DE;&#x51FD;&#x6570;&#x7684;&#x51FD;&#x6570;&#x5728;C&#x8BED;&#x8A00;&#x4E2D;&#x5F88;&#x5C11;&#x89C1;&#xFF0C;&#x5728;&#x4E00;&#x4E9B;&#x51FD;&#x6570;&#x5F0F;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#xFF08;&#x4F8B;&#x5982;LISP&#xFF09;&#x4E2D;&#x5219;&#x5F88;&#x5E38;&#x89C1;&#xFF0C;&#x57FA;&#x672C;&#x601D;&#x60F3;&#x662F;&#x628A;&#x51FD;&#x6570;&#x4E5F;&#x5F53;&#x4F5C;&#x4E00;&#x79CD;&#x6570;&#x636E;&#x6765;&#x64CD;&#x4F5C;&#xFF0C;&#x8F93;&#x5165;&#x3001;&#x8F93;&#x51FA;&#x548C;&#x53C2;&#x4E0E;&#x8FD0;&#x7B97;&#xFF0C;&#x64CD;&#x4F5C;&#x51FD;&#x6570;&#x7684;&#x51FD;&#x6570;&#x79F0;&#x4E3A;&#x9AD8;&#x9636;&#x51FD;&#x6570;&#xFF08;High-order Function&#xFF09;<a id="id2822434" class="indexterm"></a>&#x3002;</p><div class="simplesect" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2822441"></a>&#x4E60;&#x9898;</h3></div></div></div><p>1&#x3001;<a class="xref" href="bi01.html#bibli.kr" title="The C Programming Language">[<abbr class="abbrev">K&amp;R</abbr>]</a>&#x7684;5.6&#x8282;&#x6709;&#x4E00;&#x4E2A;<code class="literal">qsort</code>&#x51FD;&#x6570;&#x7684;&#x5B9E;&#x73B0;&#xFF0C;&#x53EF;&#x4EE5;&#x5BF9;&#x4E00;&#x7EC4;&#x4EFB;&#x610F;&#x7C7B;&#x578B;&#x7684;&#x5BF9;&#x8C61;&#x505A;&#x5FEB;&#x901F;&#x6392;&#x5E8F;&#x3002;&#x8BF7;&#x8BFB;&#x8005;&#x4EFF;&#x7167;&#x90A3;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x5199;&#x4E00;&#x4E2A;&#x63D2;&#x5165;&#x6392;&#x5E8F;&#x7684;&#x51FD;&#x6570;&#x548C;&#x4E00;&#x4E2A;&#x6298;&#x534A;&#x67E5;&#x627E;&#x7684;&#x51FD;&#x6570;&#x3002;</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="ch24s04.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><td width="20%" align="center"><a accesskey="u" href="ch24.html">&#x4E0A;&#x4E00;&#x7EA7;</a></td><td width="40%" align="right">&#xA0;<a accesskey="n" href="ch24s06.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr><tr><td width="40%" align="left" valign="top">4.&#xA0;&#x8FD4;&#x56DE;&#x503C;&#x662F;&#x6307;&#x9488;&#x7684;&#x60C5;&#x51B5;&#xA0;</td><td width="20%" align="center"><a accesskey="h" href="index.html">&#x8D77;&#x59CB;&#x9875;</a></td><td width="40%" align="right" valign="top">&#xA0;6.&#xA0;&#x53EF;&#x53D8;&#x53C2;&#x6570;</td></tr></tbody></table></div>
+</body></html>

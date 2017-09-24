@@ -1,56 +1,54 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8. mmap</title><link rel="stylesheet" href="styles.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.73.2" /><link rel="start" href="index.html" title="Linux C编程一站式学习" /><link rel="up" href="ch28.html" title="第 28 章 文件与I/O" /><link rel="prev" href="ch28s07.html" title="7. ioctl" /><link rel="next" href="ch29.html" title="第 29 章 文件系统" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">8. mmap</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch28s07.html">上一页</a> </td><th width="60%" align="center">第 28 章 文件与I/O</th><td width="20%" align="right"> <a accesskey="n" href="ch29.html">下一页</a></td></tr></table><hr /></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2853510"></a>8. mmap</h2></div></div></div><p><code class="literal">mmap</code>可以把磁盘文件的一部分直接映射到内存，这样文件中的位置直接就有对应的内存地址，对文件的读写可以直接用指针来做而不需要<code class="literal">read</code>/<code class="literal">write</code>函数。</p><pre class="programlisting">#include &lt;sys/mman.h&gt;
+<!--?xml version="1.0" encoding="UTF-8" standalone="no"?--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>8.&#xA0;mmap</title><link rel="stylesheet" href="styles.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="Linux C&#x7F16;&#x7A0B;&#x4E00;&#x7AD9;&#x5F0F;&#x5B66;&#x4E60;"><link rel="up" href="ch28.html" title="&#x7B2C;&#xA0;28&#xA0;&#x7AE0;&#xA0;&#x6587;&#x4EF6;&#x4E0E;I/O"><link rel="prev" href="ch28s07.html" title="7.&#xA0;ioctl"><link rel="next" href="ch29.html" title="&#x7B2C;&#xA0;29&#xA0;&#x7AE0;&#xA0;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">8.&#xA0;mmap</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch28s07.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><th width="60%" align="center">&#x7B2C;&#xA0;28&#xA0;&#x7AE0;&#xA0;&#x6587;&#x4EF6;&#x4E0E;I/O</th><td width="20%" align="right">&#xA0;<a accesskey="n" href="ch29.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr></tbody></table><hr></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2853510"></a>8.&#xA0;mmap</h2></div></div></div><p><code class="literal">mmap</code>&#x53EF;&#x4EE5;&#x628A;&#x78C1;&#x76D8;&#x6587;&#x4EF6;&#x7684;&#x4E00;&#x90E8;&#x5206;&#x76F4;&#x63A5;&#x6620;&#x5C04;&#x5230;&#x5185;&#x5B58;&#xFF0C;&#x8FD9;&#x6837;&#x6587;&#x4EF6;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;&#x76F4;&#x63A5;&#x5C31;&#x6709;&#x5BF9;&#x5E94;&#x7684;&#x5185;&#x5B58;&#x5730;&#x5740;&#xFF0C;&#x5BF9;&#x6587;&#x4EF6;&#x7684;&#x8BFB;&#x5199;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x7528;&#x6307;&#x9488;&#x6765;&#x505A;&#x800C;&#x4E0D;&#x9700;&#x8981;<code class="literal">read</code>/<code class="literal">write</code>&#x51FD;&#x6570;&#x3002;</p><pre class="programlisting">#include &lt;sys/mman.h&gt;
 
  void *mmap(void *addr, size_t len, int prot, int flag, int filedes, off_t off);
- int munmap(void *addr, size_t len);</pre><p>该函数各参数的作用图示如下：</p><div class="figure"><a id="id2853551"></a><p class="title"><b>图 28.4. mmap函数</b></p><div class="figure-contents"><div><img src="images/io.mmap.png" alt="mmap函数" /></div></div></div><br class="figure-break" /><p>如果<code class="literal">addr</code>参数为<code class="literal">NULL</code>，内核会自己在进程地址空间中选择合适的地址建立映射。如果<code class="literal">addr</code>不是<code class="literal">NULL</code>，则给内核一个提示，应该从什么地址开始映射，内核会选择<code class="literal">addr</code>之上的某个合适的地址开始映射。建立映射后，真正的映射首地址通过返回值可以得到。<code class="literal">len</code>参数是需要映射的那一部分文件的长度。<code class="literal">off</code>参数是从文件的什么位置开始映射，必须是页大小的整数倍（在32位体系统结构上通常是4K）。<code class="literal">filedes</code>是代表该文件的描述符。</p><p><code class="literal">prot</code>参数有四种取值：</p><div class="itemizedlist"><ul type="disc"><li><p>PROT_EXEC表示映射的这一段可执行，例如映射共享库</p></li><li><p>PROT_READ表示映射的这一段可读</p></li><li><p>PROT_WRITE表示映射的这一段可写</p></li><li><p>PROT_NONE表示映射的这一段不可访问</p></li></ul></div><p><code class="literal">flag</code>参数有很多种取值，这里只讲两种，其它取值可查看<code class="literal">mmap(2)</code></p><div class="itemizedlist"><ul type="disc"><li><p>MAP_SHARED多个进程对同一个文件的映射是共享的，一个进程对映射的内存做了修改，另一个进程也会看到这种变化。</p></li><li><p>MAP_PRIVATE多个进程对同一个文件的映射不是共享的，一个进程对映射的内存做了修改，另一个进程并不会看到这种变化，也不会真的写到文件中去。</p></li></ul></div><p>如果<code class="literal">mmap</code>成功则返回映射首地址，如果出错则返回常数<code class="literal">MAP_FAILED</code>。当进程终止时，该进程的映射内存会自动解除，也可以调用<code class="literal">munmap</code>解除映射。<code class="literal">munmap</code>成功返回0，出错返回-1。</p><p>下面做一个简单的实验。</p><pre class="screen">$ vi hello
-（编辑该文件的内容为“hello”）
+ int munmap(void *addr, size_t len);</pre><p>&#x8BE5;&#x51FD;&#x6570;&#x5404;&#x53C2;&#x6570;&#x7684;&#x4F5C;&#x7528;&#x56FE;&#x793A;&#x5982;&#x4E0B;&#xFF1A;</p><div class="figure"><a id="id2853551"></a><p class="title"><b>&#x56FE;&#xA0;28.4.&#xA0;mmap&#x51FD;&#x6570;</b></p><div class="figure-contents"><div><img src="images/io.mmap.png" alt="mmap&#x51FD;&#x6570;"></div></div></div><br class="figure-break"><p>&#x5982;&#x679C;<code class="literal">addr</code>&#x53C2;&#x6570;&#x4E3A;<code class="literal">NULL</code>&#xFF0C;&#x5185;&#x6838;&#x4F1A;&#x81EA;&#x5DF1;&#x5728;&#x8FDB;&#x7A0B;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x4E2D;&#x9009;&#x62E9;&#x5408;&#x9002;&#x7684;&#x5730;&#x5740;&#x5EFA;&#x7ACB;&#x6620;&#x5C04;&#x3002;&#x5982;&#x679C;<code class="literal">addr</code>&#x4E0D;&#x662F;<code class="literal">NULL</code>&#xFF0C;&#x5219;&#x7ED9;&#x5185;&#x6838;&#x4E00;&#x4E2A;&#x63D0;&#x793A;&#xFF0C;&#x5E94;&#x8BE5;&#x4ECE;&#x4EC0;&#x4E48;&#x5730;&#x5740;&#x5F00;&#x59CB;&#x6620;&#x5C04;&#xFF0C;&#x5185;&#x6838;&#x4F1A;&#x9009;&#x62E9;<code class="literal">addr</code>&#x4E4B;&#x4E0A;&#x7684;&#x67D0;&#x4E2A;&#x5408;&#x9002;&#x7684;&#x5730;&#x5740;&#x5F00;&#x59CB;&#x6620;&#x5C04;&#x3002;&#x5EFA;&#x7ACB;&#x6620;&#x5C04;&#x540E;&#xFF0C;&#x771F;&#x6B63;&#x7684;&#x6620;&#x5C04;&#x9996;&#x5730;&#x5740;&#x901A;&#x8FC7;&#x8FD4;&#x56DE;&#x503C;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x3002;<code class="literal">len</code>&#x53C2;&#x6570;&#x662F;&#x9700;&#x8981;&#x6620;&#x5C04;&#x7684;&#x90A3;&#x4E00;&#x90E8;&#x5206;&#x6587;&#x4EF6;&#x7684;&#x957F;&#x5EA6;&#x3002;<code class="literal">off</code>&#x53C2;&#x6570;&#x662F;&#x4ECE;&#x6587;&#x4EF6;&#x7684;&#x4EC0;&#x4E48;&#x4F4D;&#x7F6E;&#x5F00;&#x59CB;&#x6620;&#x5C04;&#xFF0C;&#x5FC5;&#x987B;&#x662F;&#x9875;&#x5927;&#x5C0F;&#x7684;&#x6574;&#x6570;&#x500D;&#xFF08;&#x5728;32&#x4F4D;&#x4F53;&#x7CFB;&#x7EDF;&#x7ED3;&#x6784;&#x4E0A;&#x901A;&#x5E38;&#x662F;4K&#xFF09;&#x3002;<code class="literal">filedes</code>&#x662F;&#x4EE3;&#x8868;&#x8BE5;&#x6587;&#x4EF6;&#x7684;&#x63CF;&#x8FF0;&#x7B26;&#x3002;</p><p><code class="literal">prot</code>&#x53C2;&#x6570;&#x6709;&#x56DB;&#x79CD;&#x53D6;&#x503C;&#xFF1A;</p><div class="itemizedlist"><ul type="disc"><li><p>PROT_EXEC&#x8868;&#x793A;&#x6620;&#x5C04;&#x7684;&#x8FD9;&#x4E00;&#x6BB5;&#x53EF;&#x6267;&#x884C;&#xFF0C;&#x4F8B;&#x5982;&#x6620;&#x5C04;&#x5171;&#x4EAB;&#x5E93;</p></li><li><p>PROT_READ&#x8868;&#x793A;&#x6620;&#x5C04;&#x7684;&#x8FD9;&#x4E00;&#x6BB5;&#x53EF;&#x8BFB;</p></li><li><p>PROT_WRITE&#x8868;&#x793A;&#x6620;&#x5C04;&#x7684;&#x8FD9;&#x4E00;&#x6BB5;&#x53EF;&#x5199;</p></li><li><p>PROT_NONE&#x8868;&#x793A;&#x6620;&#x5C04;&#x7684;&#x8FD9;&#x4E00;&#x6BB5;&#x4E0D;&#x53EF;&#x8BBF;&#x95EE;</p></li></ul></div><p><code class="literal">flag</code>&#x53C2;&#x6570;&#x6709;&#x5F88;&#x591A;&#x79CD;&#x53D6;&#x503C;&#xFF0C;&#x8FD9;&#x91CC;&#x53EA;&#x8BB2;&#x4E24;&#x79CD;&#xFF0C;&#x5176;&#x5B83;&#x53D6;&#x503C;&#x53EF;&#x67E5;&#x770B;<code class="literal">mmap(2)</code></p><div class="itemizedlist"><ul type="disc"><li><p>MAP_SHARED&#x591A;&#x4E2A;&#x8FDB;&#x7A0B;&#x5BF9;&#x540C;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x6620;&#x5C04;&#x662F;&#x5171;&#x4EAB;&#x7684;&#xFF0C;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x5BF9;&#x6620;&#x5C04;&#x7684;&#x5185;&#x5B58;&#x505A;&#x4E86;&#x4FEE;&#x6539;&#xFF0C;&#x53E6;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x4E5F;&#x4F1A;&#x770B;&#x5230;&#x8FD9;&#x79CD;&#x53D8;&#x5316;&#x3002;</p></li><li><p>MAP_PRIVATE&#x591A;&#x4E2A;&#x8FDB;&#x7A0B;&#x5BF9;&#x540C;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x6620;&#x5C04;&#x4E0D;&#x662F;&#x5171;&#x4EAB;&#x7684;&#xFF0C;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x5BF9;&#x6620;&#x5C04;&#x7684;&#x5185;&#x5B58;&#x505A;&#x4E86;&#x4FEE;&#x6539;&#xFF0C;&#x53E6;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x5E76;&#x4E0D;&#x4F1A;&#x770B;&#x5230;&#x8FD9;&#x79CD;&#x53D8;&#x5316;&#xFF0C;&#x4E5F;&#x4E0D;&#x4F1A;&#x771F;&#x7684;&#x5199;&#x5230;&#x6587;&#x4EF6;&#x4E2D;&#x53BB;&#x3002;</p></li></ul></div><p>&#x5982;&#x679C;<code class="literal">mmap</code>&#x6210;&#x529F;&#x5219;&#x8FD4;&#x56DE;&#x6620;&#x5C04;&#x9996;&#x5730;&#x5740;&#xFF0C;&#x5982;&#x679C;&#x51FA;&#x9519;&#x5219;&#x8FD4;&#x56DE;&#x5E38;&#x6570;<code class="literal">MAP_FAILED</code>&#x3002;&#x5F53;&#x8FDB;&#x7A0B;&#x7EC8;&#x6B62;&#x65F6;&#xFF0C;&#x8BE5;&#x8FDB;&#x7A0B;&#x7684;&#x6620;&#x5C04;&#x5185;&#x5B58;&#x4F1A;&#x81EA;&#x52A8;&#x89E3;&#x9664;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x8C03;&#x7528;<code class="literal">munmap</code>&#x89E3;&#x9664;&#x6620;&#x5C04;&#x3002;<code class="literal">munmap</code>&#x6210;&#x529F;&#x8FD4;&#x56DE;0&#xFF0C;&#x51FA;&#x9519;&#x8FD4;&#x56DE;-1&#x3002;</p><p>&#x4E0B;&#x9762;&#x505A;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x5B9E;&#x9A8C;&#x3002;</p><pre class="screen">$ vi hello
+&#xFF08;&#x7F16;&#x8F91;&#x8BE5;&#x6587;&#x4EF6;&#x7684;&#x5185;&#x5BB9;&#x4E3A;&#x201C;hello&#x201D;&#xFF09;
 $ od -tx1 -tc hello 
 0000000 68 65 6c 6c 6f 0a
           h   e   l   l   o  \n
-0000006</pre><p>现在用如下程序操作这个文件（注意，把<code class="literal">fd</code>关掉并不影响该文件已建立的映射，仍然可以对文件进行读写）。</p><pre class="programlisting">#include &lt;stdlib.h&gt;
+0000006</pre><p>&#x73B0;&#x5728;&#x7528;&#x5982;&#x4E0B;&#x7A0B;&#x5E8F;&#x64CD;&#x4F5C;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#xFF08;&#x6CE8;&#x610F;&#xFF0C;&#x628A;<code class="literal">fd</code>&#x5173;&#x6389;&#x5E76;&#x4E0D;&#x5F71;&#x54CD;&#x8BE5;&#x6587;&#x4EF6;&#x5DF2;&#x5EFA;&#x7ACB;&#x7684;&#x6620;&#x5C04;&#xFF0C;&#x4ECD;&#x7136;&#x53EF;&#x4EE5;&#x5BF9;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x8BFB;&#x5199;&#xFF09;&#x3002;</p><pre class="programlisting">#include &lt;stdlib.h&gt;
 #include &lt;sys/mman.h&gt;
 #include &lt;fcntl.h&gt;
 
 int main(void)
 {
 	int *p;
-	int fd = open("hello", O_RDWR);
+	int fd = open(&quot;hello&quot;, O_RDWR);
 	if (fd &lt; 0) {
-		perror("open hello");
+		perror(&quot;open hello&quot;);
 		exit(1);
 	}
 	p = mmap(NULL, 6, PROT_WRITE, MAP_SHARED, fd, 0);
 	if (p == MAP_FAILED) {
-		perror("mmap");
+		perror(&quot;mmap&quot;);
 		exit(1);
 	}
 	close(fd);
 	p[0] = 0x30313233;
 	munmap(p, 6);
 	return 0;
-}</pre><p>然后再查看这个文件的内容：</p><pre class="screen">$ od -tx1 -tc hello
+}</pre><p>&#x7136;&#x540E;&#x518D;&#x67E5;&#x770B;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x5185;&#x5BB9;&#xFF1A;</p><pre class="screen">$ od -tx1 -tc hello
  0000000 33 32 31 30 6f 0a
            3   2   1   0   o  \n
- 0000006</pre><p>请读者自己分析一下实验结果。</p><p><code class="literal">mmap</code>函数的底层也是一个系统调用，在执行程序时经常要用到这个系统调用来映射共享库到该进程的地址空间。例如一个很简单的hello world程序：</p><pre class="programlisting">#include &lt;stdio.h&gt;
+ 0000006</pre><p>&#x8BF7;&#x8BFB;&#x8005;&#x81EA;&#x5DF1;&#x5206;&#x6790;&#x4E00;&#x4E0B;&#x5B9E;&#x9A8C;&#x7ED3;&#x679C;&#x3002;</p><p><code class="literal">mmap</code>&#x51FD;&#x6570;&#x7684;&#x5E95;&#x5C42;&#x4E5F;&#x662F;&#x4E00;&#x4E2A;&#x7CFB;&#x7EDF;&#x8C03;&#x7528;&#xFF0C;&#x5728;&#x6267;&#x884C;&#x7A0B;&#x5E8F;&#x65F6;&#x7ECF;&#x5E38;&#x8981;&#x7528;&#x5230;&#x8FD9;&#x4E2A;&#x7CFB;&#x7EDF;&#x8C03;&#x7528;&#x6765;&#x6620;&#x5C04;&#x5171;&#x4EAB;&#x5E93;&#x5230;&#x8BE5;&#x8FDB;&#x7A0B;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x3002;&#x4F8B;&#x5982;&#x4E00;&#x4E2A;&#x5F88;&#x7B80;&#x5355;&#x7684;hello world&#x7A0B;&#x5E8F;&#xFF1A;</p><pre class="programlisting">#include &lt;stdio.h&gt;
 
 int main(void)
 {
-	printf("hello world\n");
+	printf(&quot;hello world\n&quot;);
 	return 0;
-}</pre><p>用<code class="literal">strace</code>命令执行该程序，跟踪该程序执行过程中用到的所有系统调用的参数及返回值：</p><pre class="screen">$ strace ./a.out 
-execve("./a.out", ["./a.out"], [/* 38 vars */]) = 0
+}</pre><p>&#x7528;<code class="literal">strace</code>&#x547D;&#x4EE4;&#x6267;&#x884C;&#x8BE5;&#x7A0B;&#x5E8F;&#xFF0C;&#x8DDF;&#x8E2A;&#x8BE5;&#x7A0B;&#x5E8F;&#x6267;&#x884C;&#x8FC7;&#x7A0B;&#x4E2D;&#x7528;&#x5230;&#x7684;&#x6240;&#x6709;&#x7CFB;&#x7EDF;&#x8C03;&#x7528;&#x7684;&#x53C2;&#x6570;&#x53CA;&#x8FD4;&#x56DE;&#x503C;&#xFF1A;</p><pre class="screen">$ strace ./a.out 
+execve(&quot;./a.out&quot;, [&quot;./a.out&quot;], [/* 38 vars */]) = 0
 brk(0)                                  = 0x804a000
-access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+access(&quot;/etc/ld.so.nohwcap&quot;, F_OK)      = -1 ENOENT (No such file or directory)
 mmap2(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fca000
-access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
-open("/etc/ld.so.cache", O_RDONLY)      = 3
+access(&quot;/etc/ld.so.preload&quot;, R_OK)      = -1 ENOENT (No such file or directory)
+open(&quot;/etc/ld.so.cache&quot;, O_RDONLY)      = 3
 fstat64(3, {st_mode=S_IFREG|0644, st_size=63628, ...}) = 0
 mmap2(NULL, 63628, PROT_READ, MAP_PRIVATE, 3, 0) = 0xb7fba000
 close(3)                                = 0
-access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
-open("/lib/tls/i686/cmov/libc.so.6", O_RDONLY) = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\260a\1"..., 512) = 512
+access(&quot;/etc/ld.so.nohwcap&quot;, F_OK)      = -1 ENOENT (No such file or directory)
+open(&quot;/lib/tls/i686/cmov/libc.so.6&quot;, O_RDONLY) = 3
+read(3, &quot;\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\260a\1&quot;..., 512) = 512
 fstat64(3, {st_mode=S_IFREG|0644, st_size=1339816, ...}) = 0
 mmap2(NULL, 1349136, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xb7e70000
 mmap2(0xb7fb4000, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x143) = 0xb7fb4000
@@ -62,8 +60,9 @@ mprotect(0xb7fb4000, 4096, PROT_READ)   = 0
 munmap(0xb7fba000, 63628)               = 0
 fstat64(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 1), ...}) = 0
 mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb7fc9000
-write(1, "hello world\n", 12hello world
+write(1, &quot;hello world\n&quot;, 12hello world
 )           = 12
 exit_group(0)                           = ?
-Process 8572 detached</pre><p>可以看到，执行这个程序要映射共享库<code class="literal">/lib/tls/i686/cmov/libc.so.6</code>到进程地址空间。也可以看到，<code class="literal">printf</code>函数的底层确实是调用<code class="literal">write</code>。
-</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch28s07.html">上一页</a> </td><td width="20%" align="center"><a accesskey="u" href="ch28.html">上一级</a></td><td width="40%" align="right"> <a accesskey="n" href="ch29.html">下一页</a></td></tr><tr><td width="40%" align="left" valign="top">7. ioctl </td><td width="20%" align="center"><a accesskey="h" href="index.html">起始页</a></td><td width="40%" align="right" valign="top"> 第 29 章 文件系统</td></tr></table></div></body></html>
+Process 8572 detached</pre><p>&#x53EF;&#x4EE5;&#x770B;&#x5230;&#xFF0C;&#x6267;&#x884C;&#x8FD9;&#x4E2A;&#x7A0B;&#x5E8F;&#x8981;&#x6620;&#x5C04;&#x5171;&#x4EAB;&#x5E93;<code class="literal">/lib/tls/i686/cmov/libc.so.6</code>&#x5230;&#x8FDB;&#x7A0B;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x3002;&#x4E5F;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#xFF0C;<code class="literal">printf</code>&#x51FD;&#x6570;&#x7684;&#x5E95;&#x5C42;&#x786E;&#x5B9E;&#x662F;&#x8C03;&#x7528;<code class="literal">write</code>&#x3002;
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="ch28s07.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><td width="20%" align="center"><a accesskey="u" href="ch28.html">&#x4E0A;&#x4E00;&#x7EA7;</a></td><td width="40%" align="right">&#xA0;<a accesskey="n" href="ch29.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr><tr><td width="40%" align="left" valign="top">7.&#xA0;ioctl&#xA0;</td><td width="20%" align="center"><a accesskey="h" href="index.html">&#x8D77;&#x59CB;&#x9875;</a></td><td width="40%" align="right" valign="top">&#xA0;&#x7B2C;&#xA0;29&#xA0;&#x7AE0;&#xA0;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;</td></tr></tbody></table></div>
+</body></html>

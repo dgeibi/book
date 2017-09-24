@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3. 观察点</title><link rel="stylesheet" href="styles.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.73.2" /><link rel="start" href="index.html" title="Linux C编程一站式学习" /><link rel="up" href="ch10.html" title="第 10 章 gdb" /><link rel="prev" href="ch10s02.html" title="2. 断点" /><link rel="next" href="ch10s04.html" title="4. 段错误" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. 观察点</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s02.html">上一页</a> </td><th width="60%" align="center">第 10 章 gdb</th><td width="20%" align="right"> <a accesskey="n" href="ch10s04.html">下一页</a></td></tr></table><hr /></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2741904"></a>3. 观察点</h2></div></div></div><p>接着上一节的步骤，经过调试我们知道，虽然<code class="literal">sum</code>已经赋了初值0，但仍需要在<code class="literal">while (1)</code>循环的开头加上<code class="literal">sum = 0;</code>：</p><div class="example"><a id="id2741931"></a><p class="title"><b>例 10.3. 观察点调试实例</b></p><div class="example-contents"><pre class="programlisting">#include &lt;stdio.h&gt;
+<!--?xml version="1.0" encoding="UTF-8" standalone="no"?--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>3.&#xA0;&#x89C2;&#x5BDF;&#x70B9;</title><link rel="stylesheet" href="styles.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="Linux C&#x7F16;&#x7A0B;&#x4E00;&#x7AD9;&#x5F0F;&#x5B66;&#x4E60;"><link rel="up" href="ch10.html" title="&#x7B2C;&#xA0;10&#xA0;&#x7AE0;&#xA0;gdb"><link rel="prev" href="ch10s02.html" title="2.&#xA0;&#x65AD;&#x70B9;"><link rel="next" href="ch10s04.html" title="4.&#xA0;&#x6BB5;&#x9519;&#x8BEF;"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">3.&#xA0;&#x89C2;&#x5BDF;&#x70B9;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s02.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><th width="60%" align="center">&#x7B2C;&#xA0;10&#xA0;&#x7AE0;&#xA0;gdb</th><td width="20%" align="right">&#xA0;<a accesskey="n" href="ch10s04.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr></tbody></table><hr></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2741904"></a>3.&#xA0;&#x89C2;&#x5BDF;&#x70B9;</h2></div></div></div><p>&#x63A5;&#x7740;&#x4E0A;&#x4E00;&#x8282;&#x7684;&#x6B65;&#x9AA4;&#xFF0C;&#x7ECF;&#x8FC7;&#x8C03;&#x8BD5;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#xFF0C;&#x867D;&#x7136;<code class="literal">sum</code>&#x5DF2;&#x7ECF;&#x8D4B;&#x4E86;&#x521D;&#x503C;0&#xFF0C;&#x4F46;&#x4ECD;&#x9700;&#x8981;&#x5728;<code class="literal">while (1)</code>&#x5FAA;&#x73AF;&#x7684;&#x5F00;&#x5934;&#x52A0;&#x4E0A;<code class="literal">sum = 0;</code>&#xFF1A;</p><div class="example"><a id="id2741931"></a><p class="title"><b>&#x4F8B;&#xA0;10.3.&#xA0;&#x89C2;&#x5BDF;&#x70B9;&#x8C03;&#x8BD5;&#x5B9E;&#x4F8B;</b></p><div class="example-contents"><pre class="programlisting">#include &lt;stdio.h&gt;
 
 int main(void)
 {
@@ -9,19 +7,19 @@ int main(void)
 
 	while (1) {
 		sum = 0;
-		scanf("%s", input);
-		for (i = 0; input[i] != '\0'; i++)
-			sum = sum*10 + input[i] - '0';
-		printf("input=%d\n", sum);
+		scanf(&quot;%s&quot;, input);
+		for (i = 0; input[i] != &apos;\0&apos;; i++)
+			sum = sum*10 + input[i] - &apos;0&apos;;
+		printf(&quot;input=%d\n&quot;, sum);
 	}
 	return 0;
-}</pre><p>使用<code class="literal">scanf</code>函数是非常凶险的，即使修正了这个Bug也还存在很多问题。如果输入的字符串超长了会怎么样？我们知道数组访问越界是不会检查的，所以<code class="literal">scanf</code>会写出界。现象是这样的：</p><pre class="screen">$ ./main
+}</pre><p>&#x4F7F;&#x7528;<code class="literal">scanf</code>&#x51FD;&#x6570;&#x662F;&#x975E;&#x5E38;&#x51F6;&#x9669;&#x7684;&#xFF0C;&#x5373;&#x4F7F;&#x4FEE;&#x6B63;&#x4E86;&#x8FD9;&#x4E2A;Bug&#x4E5F;&#x8FD8;&#x5B58;&#x5728;&#x5F88;&#x591A;&#x95EE;&#x9898;&#x3002;&#x5982;&#x679C;&#x8F93;&#x5165;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x8D85;&#x957F;&#x4E86;&#x4F1A;&#x600E;&#x4E48;&#x6837;&#xFF1F;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x6570;&#x7EC4;&#x8BBF;&#x95EE;&#x8D8A;&#x754C;&#x662F;&#x4E0D;&#x4F1A;&#x68C0;&#x67E5;&#x7684;&#xFF0C;&#x6240;&#x4EE5;<code class="literal">scanf</code>&#x4F1A;&#x5199;&#x51FA;&#x754C;&#x3002;&#x73B0;&#x8C61;&#x662F;&#x8FD9;&#x6837;&#x7684;&#xFF1A;</p><pre class="screen">$ ./main
 123
 input=123
 67
 input=67
 12345
-input=123407</pre><p>下面用调试器看看最后这个诡异的结果是怎么出来的<sup>[<a id="id2741970" href="#ftn.id2741970" class="footnote">21</a>]</sup>。</p><pre class="screen">$ gdb main
+input=123407</pre><p>&#x4E0B;&#x9762;&#x7528;&#x8C03;&#x8BD5;&#x5668;&#x770B;&#x770B;&#x6700;&#x540E;&#x8FD9;&#x4E2A;&#x8BE1;&#x5F02;&#x7684;&#x7ED3;&#x679C;&#x662F;&#x600E;&#x4E48;&#x51FA;&#x6765;&#x7684;<sup>[<a id="id2741970" href="#ftn.id2741970" class="footnote">21</a>]</sup>&#x3002;</p><pre class="screen">$ gdb main
 ...
 (gdb) start
 Breakpoint 1 at 0x80483b5: file main.c, line 5.
@@ -30,22 +28,22 @@ main () at main.c:5
 5		int sum = 0, i = 0;
 (gdb) n
 9			sum = 0;
-(gdb) （直接回车）
-10			scanf("%s", input);
-(gdb) （直接回车）
+(gdb) &#xFF08;&#x76F4;&#x63A5;&#x56DE;&#x8F66;&#xFF09;
+10			scanf(&quot;%s&quot;, input);
+(gdb) &#xFF08;&#x76F4;&#x63A5;&#x56DE;&#x8F66;&#xFF09;
 12345
-11			for (i = 0; input[i] != '\0'; i++)
+11			for (i = 0; input[i] != &apos;\0&apos;; i++)
 (gdb) p input
-$1 = "12345"</pre><p><code class="literal">input</code>数组只有5个元素，写出界的是<code class="literal">scanf</code>自动添的<code class="literal">'\0'</code>，用<code class="literal">x</code>命令看会更清楚一些：</p><pre class="screen">(gdb) x/7b input
-0xbfb8f0a7:	0x31	0x32	0x33	0x34	0x35	0x00	0x00</pre><p><code class="literal">x</code>命令打印指定存储单元的内容。<code class="literal">7b</code>是打印格式，<code class="literal">b</code>表示每个字节一组，7表示打印7组<sup>[<a id="id2742046" href="#ftn.id2742046" class="footnote">22</a>]</sup>，从<code class="literal">input</code>数组的第一个字节开始连续打印7个字节。前5个字节是<code class="literal">input</code>数组的存储单元，打印的正是十六进制ASCII码的<code class="literal">'1'</code>到<code class="literal">'5'</code>，第6个字节是写出界的<code class="literal">'\0'</code>。根据运行结果，前4个字符转成数字都没错，第5个错了，也就是<code class="literal">i</code>从0到3的循环都没错，我们设一个条件断点从<code class="literal">i</code>等于4开始单步调试：</p><pre class="screen">(gdb) l
+$1 = &quot;12345&quot;</pre><p><code class="literal">input</code>&#x6570;&#x7EC4;&#x53EA;&#x6709;5&#x4E2A;&#x5143;&#x7D20;&#xFF0C;&#x5199;&#x51FA;&#x754C;&#x7684;&#x662F;<code class="literal">scanf</code>&#x81EA;&#x52A8;&#x6DFB;&#x7684;<code class="literal">&apos;\0&apos;</code>&#xFF0C;&#x7528;<code class="literal">x</code>&#x547D;&#x4EE4;&#x770B;&#x4F1A;&#x66F4;&#x6E05;&#x695A;&#x4E00;&#x4E9B;&#xFF1A;</p><pre class="screen">(gdb) x/7b input
+0xbfb8f0a7:	0x31	0x32	0x33	0x34	0x35	0x00	0x00</pre><p><code class="literal">x</code>&#x547D;&#x4EE4;&#x6253;&#x5370;&#x6307;&#x5B9A;&#x5B58;&#x50A8;&#x5355;&#x5143;&#x7684;&#x5185;&#x5BB9;&#x3002;<code class="literal">7b</code>&#x662F;&#x6253;&#x5370;&#x683C;&#x5F0F;&#xFF0C;<code class="literal">b</code>&#x8868;&#x793A;&#x6BCF;&#x4E2A;&#x5B57;&#x8282;&#x4E00;&#x7EC4;&#xFF0C;7&#x8868;&#x793A;&#x6253;&#x5370;7&#x7EC4;<sup>[<a id="id2742046" href="#ftn.id2742046" class="footnote">22</a>]</sup>&#xFF0C;&#x4ECE;<code class="literal">input</code>&#x6570;&#x7EC4;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x5B57;&#x8282;&#x5F00;&#x59CB;&#x8FDE;&#x7EED;&#x6253;&#x5370;7&#x4E2A;&#x5B57;&#x8282;&#x3002;&#x524D;5&#x4E2A;&#x5B57;&#x8282;&#x662F;<code class="literal">input</code>&#x6570;&#x7EC4;&#x7684;&#x5B58;&#x50A8;&#x5355;&#x5143;&#xFF0C;&#x6253;&#x5370;&#x7684;&#x6B63;&#x662F;&#x5341;&#x516D;&#x8FDB;&#x5236;ASCII&#x7801;&#x7684;<code class="literal">&apos;1&apos;</code>&#x5230;<code class="literal">&apos;5&apos;</code>&#xFF0C;&#x7B2C;6&#x4E2A;&#x5B57;&#x8282;&#x662F;&#x5199;&#x51FA;&#x754C;&#x7684;<code class="literal">&apos;\0&apos;</code>&#x3002;&#x6839;&#x636E;&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#xFF0C;&#x524D;4&#x4E2A;&#x5B57;&#x7B26;&#x8F6C;&#x6210;&#x6570;&#x5B57;&#x90FD;&#x6CA1;&#x9519;&#xFF0C;&#x7B2C;5&#x4E2A;&#x9519;&#x4E86;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;<code class="literal">i</code>&#x4ECE;0&#x5230;3&#x7684;&#x5FAA;&#x73AF;&#x90FD;&#x6CA1;&#x9519;&#xFF0C;&#x6211;&#x4EEC;&#x8BBE;&#x4E00;&#x4E2A;&#x6761;&#x4EF6;&#x65AD;&#x70B9;&#x4ECE;<code class="literal">i</code>&#x7B49;&#x4E8E;4&#x5F00;&#x59CB;&#x5355;&#x6B65;&#x8C03;&#x8BD5;&#xFF1A;</p><pre class="screen">(gdb) l
 6		char input[5];
 7	
 8		while (1) {
 9			sum = 0;
-10			scanf("%s", input);
-11			for (i = 0; input[i] != '\0'; i++)
-12				sum = sum*10 + input[i] - '0';
-13			printf("input=%d\n", sum);
+10			scanf(&quot;%s&quot;, input);
+11			for (i = 0; input[i] != &apos;\0&apos;; i++)
+12				sum = sum*10 + input[i] - &apos;0&apos;;
+13			printf(&quot;input=%d\n&quot;, sum);
 14		}
 15		return 0;
 (gdb) b 12 if i == 4
@@ -54,17 +52,17 @@ Breakpoint 2 at 0x80483e6: file main.c, line 12.
 Continuing.
 
 Breakpoint 2, main () at main.c:12
-12				sum = sum*10 + input[i] - '0';
+12				sum = sum*10 + input[i] - &apos;0&apos;;
 (gdb) p sum
-$2 = 1234</pre><p>现在<code class="literal">sum</code>是1234没错，根据运行结果是123407我们知道即将进行的这步计算肯定要出错，算出来应该是12340，那就是说<code class="literal">input[4]</code>肯定不是<code class="literal">'5'</code>了，事实证明这个推理是不严谨的：</p><pre class="screen">(gdb) x/7b input
-0xbfb8f0a7:	0x31	0x32	0x33	0x34	0x35	0x04	0x00</pre><p><code class="literal">input[4]</code>的确是0x35，产生123407还有另外一种可能，就是在下一次循环中123450不是加上而是减去一个数得到123407。可现在不是到字符串末尾了吗？怎么会有下一次循环呢？注意到循环控制条件是<code class="literal">input[i] != '\0'</code>，而本来应该是0x00的位置现在莫名其妙地变成了0x04，因此循环不会结束。继续单步：</p><pre class="screen">(gdb) n
-11			for (i = 0; input[i] != '\0'; i++)
+$2 = 1234</pre><p>&#x73B0;&#x5728;<code class="literal">sum</code>&#x662F;1234&#x6CA1;&#x9519;&#xFF0C;&#x6839;&#x636E;&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x662F;123407&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x5373;&#x5C06;&#x8FDB;&#x884C;&#x7684;&#x8FD9;&#x6B65;&#x8BA1;&#x7B97;&#x80AF;&#x5B9A;&#x8981;&#x51FA;&#x9519;&#xFF0C;&#x7B97;&#x51FA;&#x6765;&#x5E94;&#x8BE5;&#x662F;12340&#xFF0C;&#x90A3;&#x5C31;&#x662F;&#x8BF4;<code class="literal">input[4]</code>&#x80AF;&#x5B9A;&#x4E0D;&#x662F;<code class="literal">&apos;5&apos;</code>&#x4E86;&#xFF0C;&#x4E8B;&#x5B9E;&#x8BC1;&#x660E;&#x8FD9;&#x4E2A;&#x63A8;&#x7406;&#x662F;&#x4E0D;&#x4E25;&#x8C28;&#x7684;&#xFF1A;</p><pre class="screen">(gdb) x/7b input
+0xbfb8f0a7:	0x31	0x32	0x33	0x34	0x35	0x04	0x00</pre><p><code class="literal">input[4]</code>&#x7684;&#x786E;&#x662F;0x35&#xFF0C;&#x4EA7;&#x751F;123407&#x8FD8;&#x6709;&#x53E6;&#x5916;&#x4E00;&#x79CD;&#x53EF;&#x80FD;&#xFF0C;&#x5C31;&#x662F;&#x5728;&#x4E0B;&#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#x4E2D;123450&#x4E0D;&#x662F;&#x52A0;&#x4E0A;&#x800C;&#x662F;&#x51CF;&#x53BB;&#x4E00;&#x4E2A;&#x6570;&#x5F97;&#x5230;123407&#x3002;&#x53EF;&#x73B0;&#x5728;&#x4E0D;&#x662F;&#x5230;&#x5B57;&#x7B26;&#x4E32;&#x672B;&#x5C3E;&#x4E86;&#x5417;&#xFF1F;&#x600E;&#x4E48;&#x4F1A;&#x6709;&#x4E0B;&#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#x5462;&#xFF1F;&#x6CE8;&#x610F;&#x5230;&#x5FAA;&#x73AF;&#x63A7;&#x5236;&#x6761;&#x4EF6;&#x662F;<code class="literal">input[i] != &apos;\0&apos;</code>&#xFF0C;&#x800C;&#x672C;&#x6765;&#x5E94;&#x8BE5;&#x662F;0x00&#x7684;&#x4F4D;&#x7F6E;&#x73B0;&#x5728;&#x83AB;&#x540D;&#x5176;&#x5999;&#x5730;&#x53D8;&#x6210;&#x4E86;0x04&#xFF0C;&#x56E0;&#x6B64;&#x5FAA;&#x73AF;&#x4E0D;&#x4F1A;&#x7ED3;&#x675F;&#x3002;&#x7EE7;&#x7EED;&#x5355;&#x6B65;&#xFF1A;</p><pre class="screen">(gdb) n
+11			for (i = 0; input[i] != &apos;\0&apos;; i++)
 (gdb) p sum
 $3 = 12345
 (gdb) n
-12				sum = sum*10 + input[i] - '0';
+12				sum = sum*10 + input[i] - &apos;0&apos;;
 (gdb) x/7b input
-0xbfb8f0a7:	0x31	0x32	0x33	0x34	0x35	0x05	0x00</pre><p>进入下一次循环，原来的0x04又莫名其妙地变成了0x05，这是怎么回事？这个暂时解释不了，但123407这个结果可以解释了，是12345*10 + 0x05 - 0x30得到的，虽然多循环了一次，但下次一定会退出循环了，因为0x05的后面是<code class="literal">'\0'</code>。</p><p><code class="literal">input[4]</code>后面那个字节到底是什么时候变的？可以用观察点（Watchpoint）<a id="id2742192" class="indexterm"></a>来跟踪。我们知道断点是当程序执行到某一代码行时中断，而观察点是当程序访问某个存储单元时中断，如果我们不知道某个存储单元是在哪里被改动的，这时候观察点尤其有用。下面删除原来设的断点，从头执行程序，重复上次的输入，用<code class="literal">watch</code>命令设置观察点，跟踪<code class="literal">input[4]</code>后面那个字节（可以用<code class="literal">input[5]</code>表示，虽然这是访问越界）：</p><pre class="screen">(gdb) delete breakpoints 
+0xbfb8f0a7:	0x31	0x32	0x33	0x34	0x35	0x05	0x00</pre><p>&#x8FDB;&#x5165;&#x4E0B;&#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#xFF0C;&#x539F;&#x6765;&#x7684;0x04&#x53C8;&#x83AB;&#x540D;&#x5176;&#x5999;&#x5730;&#x53D8;&#x6210;&#x4E86;0x05&#xFF0C;&#x8FD9;&#x662F;&#x600E;&#x4E48;&#x56DE;&#x4E8B;&#xFF1F;&#x8FD9;&#x4E2A;&#x6682;&#x65F6;&#x89E3;&#x91CA;&#x4E0D;&#x4E86;&#xFF0C;&#x4F46;123407&#x8FD9;&#x4E2A;&#x7ED3;&#x679C;&#x53EF;&#x4EE5;&#x89E3;&#x91CA;&#x4E86;&#xFF0C;&#x662F;12345*10 + 0x05 - 0x30&#x5F97;&#x5230;&#x7684;&#xFF0C;&#x867D;&#x7136;&#x591A;&#x5FAA;&#x73AF;&#x4E86;&#x4E00;&#x6B21;&#xFF0C;&#x4F46;&#x4E0B;&#x6B21;&#x4E00;&#x5B9A;&#x4F1A;&#x9000;&#x51FA;&#x5FAA;&#x73AF;&#x4E86;&#xFF0C;&#x56E0;&#x4E3A;0x05&#x7684;&#x540E;&#x9762;&#x662F;<code class="literal">&apos;\0&apos;</code>&#x3002;</p><p><code class="literal">input[4]</code>&#x540E;&#x9762;&#x90A3;&#x4E2A;&#x5B57;&#x8282;&#x5230;&#x5E95;&#x662F;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x53D8;&#x7684;&#xFF1F;&#x53EF;&#x4EE5;&#x7528;&#x89C2;&#x5BDF;&#x70B9;&#xFF08;Watchpoint&#xFF09;<a id="id2742192" class="indexterm"></a>&#x6765;&#x8DDF;&#x8E2A;&#x3002;&#x6211;&#x4EEC;&#x77E5;&#x9053;&#x65AD;&#x70B9;&#x662F;&#x5F53;&#x7A0B;&#x5E8F;&#x6267;&#x884C;&#x5230;&#x67D0;&#x4E00;&#x4EE3;&#x7801;&#x884C;&#x65F6;&#x4E2D;&#x65AD;&#xFF0C;&#x800C;&#x89C2;&#x5BDF;&#x70B9;&#x662F;&#x5F53;&#x7A0B;&#x5E8F;&#x8BBF;&#x95EE;&#x67D0;&#x4E2A;&#x5B58;&#x50A8;&#x5355;&#x5143;&#x65F6;&#x4E2D;&#x65AD;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x4E0D;&#x77E5;&#x9053;&#x67D0;&#x4E2A;&#x5B58;&#x50A8;&#x5355;&#x5143;&#x662F;&#x5728;&#x54EA;&#x91CC;&#x88AB;&#x6539;&#x52A8;&#x7684;&#xFF0C;&#x8FD9;&#x65F6;&#x5019;&#x89C2;&#x5BDF;&#x70B9;&#x5C24;&#x5176;&#x6709;&#x7528;&#x3002;&#x4E0B;&#x9762;&#x5220;&#x9664;&#x539F;&#x6765;&#x8BBE;&#x7684;&#x65AD;&#x70B9;&#xFF0C;&#x4ECE;&#x5934;&#x6267;&#x884C;&#x7A0B;&#x5E8F;&#xFF0C;&#x91CD;&#x590D;&#x4E0A;&#x6B21;&#x7684;&#x8F93;&#x5165;&#xFF0C;&#x7528;<code class="literal">watch</code>&#x547D;&#x4EE4;&#x8BBE;&#x7F6E;&#x89C2;&#x5BDF;&#x70B9;&#xFF0C;&#x8DDF;&#x8E2A;<code class="literal">input[4]</code>&#x540E;&#x9762;&#x90A3;&#x4E2A;&#x5B57;&#x8282;&#xFF08;&#x53EF;&#x4EE5;&#x7528;<code class="literal">input[5]</code>&#x8868;&#x793A;&#xFF0C;&#x867D;&#x7136;&#x8FD9;&#x662F;&#x8BBF;&#x95EE;&#x8D8A;&#x754C;&#xFF09;&#xFF1A;</p><pre class="screen">(gdb) delete breakpoints 
 Delete all breakpoints? (y or n) y
 (gdb) start
 Breakpoint 1 at 0x80483b5: file main.c, line 5.
@@ -73,11 +71,11 @@ main () at main.c:5
 5		int sum = 0, i = 0;
 (gdb) n
 9			sum = 0;
-(gdb) （直接回车）
-10			scanf("%s", input);
-(gdb) （直接回车）
+(gdb) &#xFF08;&#x76F4;&#x63A5;&#x56DE;&#x8F66;&#xFF09;
+10			scanf(&quot;%s&quot;, input);
+(gdb) &#xFF08;&#x76F4;&#x63A5;&#x56DE;&#x8F66;&#xFF09;
 12345
-11			for (i = 0; input[i] != '\0'; i++)
+11			for (i = 0; input[i] != &apos;\0&apos;; i++)
 (gdb) watch input[5]
 Hardware watchpoint 2: input[5]
 (gdb) i watchpoints 
@@ -87,38 +85,38 @@ Num     Type           Disp Enb Address    What
 Continuing.
 Hardware watchpoint 2: input[5]
 
-Old value = 0 '\0'
-New value = 1 '\001'
+Old value = 0 &apos;\0&apos;
+New value = 1 &apos;\001&apos;
 0x0804840c in main () at main.c:11
-11			for (i = 0; input[i] != '\0'; i++)
+11			for (i = 0; input[i] != &apos;\0&apos;; i++)
 (gdb) c
 Continuing.
 Hardware watchpoint 2: input[5]
 
-Old value = 1 '\001'
-New value = 2 '\002'
+Old value = 1 &apos;\001&apos;
+New value = 2 &apos;\002&apos;
 0x0804840c in main () at main.c:11
-11			for (i = 0; input[i] != '\0'; i++)
+11			for (i = 0; input[i] != &apos;\0&apos;; i++)
 (gdb) c
 Continuing.
 Hardware watchpoint 2: input[5]
 
-Old value = 2 '\002'
-New value = 3 '\003'
+Old value = 2 &apos;\002&apos;
+New value = 3 &apos;\003&apos;
 0x0804840c in main () at main.c:11
-11			for (i = 0; input[i] != '\0'; i++)</pre><p>已经很明显了，每次都是回到<code class="literal">for</code>循环开头的时候改变了<code class="literal">input[5]</code>的值，而且是每次加1，而循环变量<code class="literal">i</code>正是在每次回到循环开头之前加1，原来<code class="literal">input[5]</code>就是变量<code class="literal">i</code>的存储单元，换句话说，<code class="literal">i</code>的存储单元是紧跟在<code class="literal">input</code>数组后面的。</p><p>修正这个Bug对初学者来说有一定难度。如果你发现了这个Bug却没想到数组访问越界这一点，也许一时想不出原因，就会先去处理另外一个更容易修正的Bug：如果输入的不是数字而是字母或别的符号也能算出结果来，这显然是不对的，可以在循环中加上判断条件检查非法字符：</p><pre class="programlisting">while (1) {
+11			for (i = 0; input[i] != &apos;\0&apos;; i++)</pre><p>&#x5DF2;&#x7ECF;&#x5F88;&#x660E;&#x663E;&#x4E86;&#xFF0C;&#x6BCF;&#x6B21;&#x90FD;&#x662F;&#x56DE;&#x5230;<code class="literal">for</code>&#x5FAA;&#x73AF;&#x5F00;&#x5934;&#x7684;&#x65F6;&#x5019;&#x6539;&#x53D8;&#x4E86;<code class="literal">input[5]</code>&#x7684;&#x503C;&#xFF0C;&#x800C;&#x4E14;&#x662F;&#x6BCF;&#x6B21;&#x52A0;1&#xFF0C;&#x800C;&#x5FAA;&#x73AF;&#x53D8;&#x91CF;<code class="literal">i</code>&#x6B63;&#x662F;&#x5728;&#x6BCF;&#x6B21;&#x56DE;&#x5230;&#x5FAA;&#x73AF;&#x5F00;&#x5934;&#x4E4B;&#x524D;&#x52A0;1&#xFF0C;&#x539F;&#x6765;<code class="literal">input[5]</code>&#x5C31;&#x662F;&#x53D8;&#x91CF;<code class="literal">i</code>&#x7684;&#x5B58;&#x50A8;&#x5355;&#x5143;&#xFF0C;&#x6362;&#x53E5;&#x8BDD;&#x8BF4;&#xFF0C;<code class="literal">i</code>&#x7684;&#x5B58;&#x50A8;&#x5355;&#x5143;&#x662F;&#x7D27;&#x8DDF;&#x5728;<code class="literal">input</code>&#x6570;&#x7EC4;&#x540E;&#x9762;&#x7684;&#x3002;</p><p>&#x4FEE;&#x6B63;&#x8FD9;&#x4E2A;Bug&#x5BF9;&#x521D;&#x5B66;&#x8005;&#x6765;&#x8BF4;&#x6709;&#x4E00;&#x5B9A;&#x96BE;&#x5EA6;&#x3002;&#x5982;&#x679C;&#x4F60;&#x53D1;&#x73B0;&#x4E86;&#x8FD9;&#x4E2A;Bug&#x5374;&#x6CA1;&#x60F3;&#x5230;&#x6570;&#x7EC4;&#x8BBF;&#x95EE;&#x8D8A;&#x754C;&#x8FD9;&#x4E00;&#x70B9;&#xFF0C;&#x4E5F;&#x8BB8;&#x4E00;&#x65F6;&#x60F3;&#x4E0D;&#x51FA;&#x539F;&#x56E0;&#xFF0C;&#x5C31;&#x4F1A;&#x5148;&#x53BB;&#x5904;&#x7406;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x66F4;&#x5BB9;&#x6613;&#x4FEE;&#x6B63;&#x7684;Bug&#xFF1A;&#x5982;&#x679C;&#x8F93;&#x5165;&#x7684;&#x4E0D;&#x662F;&#x6570;&#x5B57;&#x800C;&#x662F;&#x5B57;&#x6BCD;&#x6216;&#x522B;&#x7684;&#x7B26;&#x53F7;&#x4E5F;&#x80FD;&#x7B97;&#x51FA;&#x7ED3;&#x679C;&#x6765;&#xFF0C;&#x8FD9;&#x663E;&#x7136;&#x662F;&#x4E0D;&#x5BF9;&#x7684;&#xFF0C;&#x53EF;&#x4EE5;&#x5728;&#x5FAA;&#x73AF;&#x4E2D;&#x52A0;&#x4E0A;&#x5224;&#x65AD;&#x6761;&#x4EF6;&#x68C0;&#x67E5;&#x975E;&#x6CD5;&#x5B57;&#x7B26;&#xFF1A;</p><pre class="programlisting">while (1) {
 	sum = 0;
-	scanf("%s", input);
-	for (i = 0; input[i] != '\0'; i++) {
-		if (input[i] &lt; '0' || input[i] &gt; '9') {
-			printf("Invalid input!\n");
+	scanf(&quot;%s&quot;, input);
+	for (i = 0; input[i] != &apos;\0&apos;; i++) {
+		if (input[i] &lt; &apos;0&apos; || input[i] &gt; &apos;9&apos;) {
+			printf(&quot;Invalid input!\n&quot;);
 			sum = -1;
 			break;
 		}
-		sum = sum*10 + input[i] - '0';
+		sum = sum*10 + input[i] - &apos;0&apos;;
 	}
-	printf("input=%d\n", sum);
-}</pre></div></div><br class="example-break" /><p>然后你会惊喜地发现，不仅输入字母会报错，输入超长也会报错：</p><pre class="screen">$ ./main
+	printf(&quot;input=%d\n&quot;, sum);
+}</pre></div></div><br class="example-break"><p>&#x7136;&#x540E;&#x4F60;&#x4F1A;&#x60CA;&#x559C;&#x5730;&#x53D1;&#x73B0;&#xFF0C;&#x4E0D;&#x4EC5;&#x8F93;&#x5165;&#x5B57;&#x6BCD;&#x4F1A;&#x62A5;&#x9519;&#xFF0C;&#x8F93;&#x5165;&#x8D85;&#x957F;&#x4E5F;&#x4F1A;&#x62A5;&#x9519;&#xFF1A;</p><pre class="screen">$ ./main
 123a
 Invalid input!
 input=-1
@@ -132,4 +130,5 @@ input=-1
 Invalid input!
 input=-1
 23
-input=23</pre><p>似乎是两个Bug一起解决掉了，但这是治标不治本的解决方法。看起来输入超长的错误是不出现了，但只要没有找到根本原因就不可能真的解决掉，等到条件一变，它可能又冒出来了，在下一节你会看到它又以一种新的形式冒出来了。现在请思考一下为什么加上检查非法字符的代码之后输入超长也会报错。最后总结一下本节用到的<code class="literal">gdb</code>命令：</p><div class="table"><a id="id2742356"></a><p class="title"><b>表 10.3. gdb基本命令3</b></p><div class="table-contents"><table summary="gdb基本命令3" border="1"><colgroup><col /><col /></colgroup><thead><tr><th>命令</th><th>描述</th></tr></thead><tbody><tr><td>watch</td><td>设置观察点</td></tr><tr><td>info（或i） watchpoints</td><td>查看当前设置了哪些观察点</td></tr><tr><td>x</td><td>从某个位置开始打印存储单元的内容，全部当成字节来看，而不区分哪个字节属于哪个变量</td></tr></tbody></table></div></div><br class="table-break" /><div class="footnotes"><br /><hr width="100" align="left" /><div class="footnote"><p><sup>[<a id="ftn.id2741970" href="#id2741970" class="para">21</a>] </sup>不得不承认，在有些平台和操作系统上也未必得到这个结果，产生Bug的往往都是一些平台相关的问题，举这样的例子才比较像是真实软件开发中遇到的Bug，如果您的程序跑不出我这样的结果，那这一节您就凑合着看吧。</p></div><div class="footnote"><p><sup>[<a id="ftn.id2742046" href="#id2742046" class="para">22</a>] </sup>打印结果最左边的一长串数字是内存地址，在<a class="xref" href="ch17s01.html#arch.addr">第 1 节 “内存与地址”</a>详细解释，目前可以无视。</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s02.html">上一页</a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html">上一级</a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s04.html">下一页</a></td></tr><tr><td width="40%" align="left" valign="top">2. 断点 </td><td width="20%" align="center"><a accesskey="h" href="index.html">起始页</a></td><td width="40%" align="right" valign="top"> 4. 段错误</td></tr></table></div></body></html>
+input=23</pre><p>&#x4F3C;&#x4E4E;&#x662F;&#x4E24;&#x4E2A;Bug&#x4E00;&#x8D77;&#x89E3;&#x51B3;&#x6389;&#x4E86;&#xFF0C;&#x4F46;&#x8FD9;&#x662F;&#x6CBB;&#x6807;&#x4E0D;&#x6CBB;&#x672C;&#x7684;&#x89E3;&#x51B3;&#x65B9;&#x6CD5;&#x3002;&#x770B;&#x8D77;&#x6765;&#x8F93;&#x5165;&#x8D85;&#x957F;&#x7684;&#x9519;&#x8BEF;&#x662F;&#x4E0D;&#x51FA;&#x73B0;&#x4E86;&#xFF0C;&#x4F46;&#x53EA;&#x8981;&#x6CA1;&#x6709;&#x627E;&#x5230;&#x6839;&#x672C;&#x539F;&#x56E0;&#x5C31;&#x4E0D;&#x53EF;&#x80FD;&#x771F;&#x7684;&#x89E3;&#x51B3;&#x6389;&#xFF0C;&#x7B49;&#x5230;&#x6761;&#x4EF6;&#x4E00;&#x53D8;&#xFF0C;&#x5B83;&#x53EF;&#x80FD;&#x53C8;&#x5192;&#x51FA;&#x6765;&#x4E86;&#xFF0C;&#x5728;&#x4E0B;&#x4E00;&#x8282;&#x4F60;&#x4F1A;&#x770B;&#x5230;&#x5B83;&#x53C8;&#x4EE5;&#x4E00;&#x79CD;&#x65B0;&#x7684;&#x5F62;&#x5F0F;&#x5192;&#x51FA;&#x6765;&#x4E86;&#x3002;&#x73B0;&#x5728;&#x8BF7;&#x601D;&#x8003;&#x4E00;&#x4E0B;&#x4E3A;&#x4EC0;&#x4E48;&#x52A0;&#x4E0A;&#x68C0;&#x67E5;&#x975E;&#x6CD5;&#x5B57;&#x7B26;&#x7684;&#x4EE3;&#x7801;&#x4E4B;&#x540E;&#x8F93;&#x5165;&#x8D85;&#x957F;&#x4E5F;&#x4F1A;&#x62A5;&#x9519;&#x3002;&#x6700;&#x540E;&#x603B;&#x7ED3;&#x4E00;&#x4E0B;&#x672C;&#x8282;&#x7528;&#x5230;&#x7684;<code class="literal">gdb</code>&#x547D;&#x4EE4;&#xFF1A;</p><div class="table"><a id="id2742356"></a><p class="title"><b>&#x8868;&#xA0;10.3.&#xA0;gdb&#x57FA;&#x672C;&#x547D;&#x4EE4;3</b></p><div class="table-contents"><table summary="gdb&#x57FA;&#x672C;&#x547D;&#x4EE4;3" border="1"><colgroup><col><col></colgroup><thead><tr><th>&#x547D;&#x4EE4;</th><th>&#x63CF;&#x8FF0;</th></tr></thead><tbody><tr><td>watch</td><td>&#x8BBE;&#x7F6E;&#x89C2;&#x5BDF;&#x70B9;</td></tr><tr><td>info&#xFF08;&#x6216;i&#xFF09; watchpoints</td><td>&#x67E5;&#x770B;&#x5F53;&#x524D;&#x8BBE;&#x7F6E;&#x4E86;&#x54EA;&#x4E9B;&#x89C2;&#x5BDF;&#x70B9;</td></tr><tr><td>x</td><td>&#x4ECE;&#x67D0;&#x4E2A;&#x4F4D;&#x7F6E;&#x5F00;&#x59CB;&#x6253;&#x5370;&#x5B58;&#x50A8;&#x5355;&#x5143;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x5168;&#x90E8;&#x5F53;&#x6210;&#x5B57;&#x8282;&#x6765;&#x770B;&#xFF0C;&#x800C;&#x4E0D;&#x533A;&#x5206;&#x54EA;&#x4E2A;&#x5B57;&#x8282;&#x5C5E;&#x4E8E;&#x54EA;&#x4E2A;&#x53D8;&#x91CF;</td></tr></tbody></table></div></div><br class="table-break"><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a id="ftn.id2741970" href="#id2741970" class="para">21</a>] </sup>&#x4E0D;&#x5F97;&#x4E0D;&#x627F;&#x8BA4;&#xFF0C;&#x5728;&#x6709;&#x4E9B;&#x5E73;&#x53F0;&#x548C;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x4E0A;&#x4E5F;&#x672A;&#x5FC5;&#x5F97;&#x5230;&#x8FD9;&#x4E2A;&#x7ED3;&#x679C;&#xFF0C;&#x4EA7;&#x751F;Bug&#x7684;&#x5F80;&#x5F80;&#x90FD;&#x662F;&#x4E00;&#x4E9B;&#x5E73;&#x53F0;&#x76F8;&#x5173;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x4E3E;&#x8FD9;&#x6837;&#x7684;&#x4F8B;&#x5B50;&#x624D;&#x6BD4;&#x8F83;&#x50CF;&#x662F;&#x771F;&#x5B9E;&#x8F6F;&#x4EF6;&#x5F00;&#x53D1;&#x4E2D;&#x9047;&#x5230;&#x7684;Bug&#xFF0C;&#x5982;&#x679C;&#x60A8;&#x7684;&#x7A0B;&#x5E8F;&#x8DD1;&#x4E0D;&#x51FA;&#x6211;&#x8FD9;&#x6837;&#x7684;&#x7ED3;&#x679C;&#xFF0C;&#x90A3;&#x8FD9;&#x4E00;&#x8282;&#x60A8;&#x5C31;&#x51D1;&#x5408;&#x7740;&#x770B;&#x5427;&#x3002;</p></div><div class="footnote"><p><sup>[<a id="ftn.id2742046" href="#id2742046" class="para">22</a>] </sup>&#x6253;&#x5370;&#x7ED3;&#x679C;&#x6700;&#x5DE6;&#x8FB9;&#x7684;&#x4E00;&#x957F;&#x4E32;&#x6570;&#x5B57;&#x662F;&#x5185;&#x5B58;&#x5730;&#x5740;&#xFF0C;&#x5728;<a class="xref" href="ch17s01.html#arch.addr">&#x7B2C;&#xA0;1&#xA0;&#x8282; &#x201C;&#x5185;&#x5B58;&#x4E0E;&#x5730;&#x5740;&#x201D;</a>&#x8BE6;&#x7EC6;&#x89E3;&#x91CA;&#xFF0C;&#x76EE;&#x524D;&#x53EF;&#x4EE5;&#x65E0;&#x89C6;&#x3002;</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="ch10s02.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><td width="20%" align="center"><a accesskey="u" href="ch10.html">&#x4E0A;&#x4E00;&#x7EA7;</a></td><td width="40%" align="right">&#xA0;<a accesskey="n" href="ch10s04.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr><tr><td width="40%" align="left" valign="top">2.&#xA0;&#x65AD;&#x70B9;&#xA0;</td><td width="20%" align="center"><a accesskey="h" href="index.html">&#x8D77;&#x59CB;&#x9875;</a></td><td width="40%" align="right" valign="top">&#xA0;4.&#xA0;&#x6BB5;&#x9519;&#x8BEF;</td></tr></tbody></table></div>
+</body></html>

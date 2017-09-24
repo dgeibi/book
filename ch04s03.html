@@ -1,71 +1,70 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3. 布尔代数</title><link rel="stylesheet" href="styles.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.73.2" /><link rel="start" href="index.html" title="Linux C编程一站式学习" /><link rel="up" href="ch04.html" title="第 4 章 分支语句" /><link rel="prev" href="ch04s02.html" title="2. if/else语句" /><link rel="next" href="ch04s04.html" title="4. switch语句" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. 布尔代数</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s02.html">上一页</a> </td><th width="60%" align="center">第 4 章 分支语句</th><td width="20%" align="right"> <a accesskey="n" href="ch04s04.html">下一页</a></td></tr></table><hr /></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2718970"></a>3. 布尔代数</h2></div></div></div><p>在<a class="xref" href="ch04s01.html#cond.if">第 1 节 “if语句”</a>讲过，<code class="literal">a&lt;b&lt;c</code>不表示<code class="literal">b</code>既大于<code class="literal">a</code>又小于<code class="literal">c</code>，那么如果想表示这个含义该怎么写呢？可以这样：</p><pre class="programlisting">if (a &lt; b) {
+<!--?xml version="1.0" encoding="UTF-8" standalone="no"?--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>3.&#xA0;&#x5E03;&#x5C14;&#x4EE3;&#x6570;</title><link rel="stylesheet" href="styles.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="Linux C&#x7F16;&#x7A0B;&#x4E00;&#x7AD9;&#x5F0F;&#x5B66;&#x4E60;"><link rel="up" href="ch04.html" title="&#x7B2C;&#xA0;4&#xA0;&#x7AE0;&#xA0;&#x5206;&#x652F;&#x8BED;&#x53E5;"><link rel="prev" href="ch04s02.html" title="2.&#xA0;if/else&#x8BED;&#x53E5;"><link rel="next" href="ch04s04.html" title="4.&#xA0;switch&#x8BED;&#x53E5;"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">3.&#xA0;&#x5E03;&#x5C14;&#x4EE3;&#x6570;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch04s02.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><th width="60%" align="center">&#x7B2C;&#xA0;4&#xA0;&#x7AE0;&#xA0;&#x5206;&#x652F;&#x8BED;&#x53E5;</th><td width="20%" align="right">&#xA0;<a accesskey="n" href="ch04s04.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr></tbody></table><hr></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2718970"></a>3.&#xA0;&#x5E03;&#x5C14;&#x4EE3;&#x6570;</h2></div></div></div><p>&#x5728;<a class="xref" href="ch04s01.html#cond.if">&#x7B2C;&#xA0;1&#xA0;&#x8282; &#x201C;if&#x8BED;&#x53E5;&#x201D;</a>&#x8BB2;&#x8FC7;&#xFF0C;<code class="literal">a&lt;b&lt;c</code>&#x4E0D;&#x8868;&#x793A;<code class="literal">b</code>&#x65E2;&#x5927;&#x4E8E;<code class="literal">a</code>&#x53C8;&#x5C0F;&#x4E8E;<code class="literal">c</code>&#xFF0C;&#x90A3;&#x4E48;&#x5982;&#x679C;&#x60F3;&#x8868;&#x793A;&#x8FD9;&#x4E2A;&#x542B;&#x4E49;&#x8BE5;&#x600E;&#x4E48;&#x5199;&#x5462;&#xFF1F;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#xFF1A;</p><pre class="programlisting">if (a &lt; b) {
 	if (b &lt; c) {
-		printf("b is between a and c.\n");
+		printf(&quot;b is between a and c.\n&quot;);
 	}
-}</pre><p>我们也可以用逻辑与（Logical AND）<a id="id2719020" class="indexterm"></a>运算符表示这两个条件同时成立。逻辑与运算符在C语言中写成两个&amp;号（Ampersand）<a id="id2719029" class="indexterm"></a>，上面的语句可以改写为：</p><pre class="programlisting">if (a &lt; b &amp;&amp; b &lt; c) {
-	printf("b is between a and c.\n");
-}</pre><p>对于<code class="literal">a &lt; b &amp;&amp; b &lt; c</code>这个控制表达式，要求“<span class="quote"><code class="literal">a &lt; b</code>的值非0</span>”和“<span class="quote"><code class="literal">b &lt; c</code>的值非0</span>”这两个条件同时成立整个表达式的值才为1，否则整个表达式的值为0。也就是只有两个条件都为真，它们做逻辑与运算的结果才为真，有一个条件为假，则逻辑与运算的结果为假，如下表所示：</p><div class="table"><a id="id2719074"></a><p class="title"><b>表 4.2. AND的真值表</b></p><div class="table-contents"><table summary="AND的真值表" border="1"><colgroup><col /><col /><col /></colgroup><thead><tr><th>A</th><th>B</th><th>A AND B</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></tbody></table></div></div><br class="table-break" /><p>这种表称为真值表（Truth Table）<a id="id2719136" class="indexterm"></a>。注意逻辑与运算的操作数以非0表示真以0表示假，而运算结果以1表示真以0表示假（类型是<code class="literal">int</code>），我们忽略这些细微的差别，在表中全部以1表示真以0表示假。C语言还提供了逻辑或（Logical OR）<a id="id2719154" class="indexterm"></a>运算符，写成两个|线（Pipe Sign）<a id="id2719161" class="indexterm"></a>，逻辑非（Logical NOT）<a id="id2719169" class="indexterm"></a>运算符，写成一个!号（Exclamation Mark）<a id="id2719177" class="indexterm"></a>，它们的真值表如下：</p><div class="table"><a id="id2719186"></a><p class="title"><b>表 4.3. OR的真值表</b></p><div class="table-contents"><table summary="OR的真值表" border="1"><colgroup><col /><col /><col /></colgroup><thead><tr><th>A</th><th>B</th><th>A OR B</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></tbody></table></div></div><br class="table-break" /><div class="table"><a id="id2719245"></a><p class="title"><b>表 4.4. NOT的真值表</b></p><div class="table-contents"><table summary="NOT的真值表" border="1"><colgroup><col /><col /></colgroup><thead><tr><th>A</th><th>NOT A</th></tr></thead><tbody><tr><td>0</td><td>1</td></tr><tr><td>1</td><td>0</td></tr></tbody></table></div></div><br class="table-break" /><p>逻辑或表示两个条件只要有一个为真，它们做逻辑或运算的结果就为真，只有两个条件都为假，逻辑或运算的结果才为假。逻辑非的作用是对原来的逻辑值取反，原来是真的就是假，原来是假的就是真。逻辑非运算符只有一个操作数，称为单目运算符（Unary Operator）<a id="id2719295" class="indexterm"></a>，以前讲过的加减乘除、赋值、相等性、关系、逻辑与、逻辑或运算符都有两个操作数，称为双目运算符（Binary Operator）<a id="id2719306" class="indexterm"></a>。</p><p>关于逻辑运算的数学体系称为布尔代数（Boolean Algebra）<a id="id2719318" class="indexterm"></a>，以它的创始人布尔命名。在编程语言中表示真和假的数据类型叫做布尔类型，在C语言中通常用<code class="literal">int</code>型来表示，非0表示真，0表示假<sup>[<a id="id2719335" href="#ftn.id2719335" class="footnote">6</a>]</sup>。布尔逻辑是写程序的基本功之一，程序中的很多错误都可以归因于逻辑错误。以下是一些布尔代数的基本定理，为了简洁易读，真和假用1和0表示，AND用*号表示，OR用+号表示（从真值表可以看出AND和OR运算确实有点像乘法和加法运算），NOT用¬表示，变量<code class="literal">x</code>、<code class="literal">y</code>、<code class="literal">z</code>的值可能是0也可能是1。</p><div class="literallayout"><p>¬¬x=x<br />
-<br />
-x*0=0<br />
-x+1=1<br />
-<br />
-x*1=x<br />
-x+0=x<br />
-<br />
-x*x=x<br />
-x+x=x<br />
-<br />
-x*¬x=0<br />
-x+¬x=1<br />
-<br />
-x*y=y*x<br />
-x+y=y+x<br />
-<br />
-x*(y*z)=(x*y)*z<br />
-x+(y+z)=(x+y)+z<br />
-<br />
-x*(y+z)=x*y+x*z<br />
-x+y*z=(x+y)*(x+z)<br />
-<br />
-x+x*y=x<br />
-x*(x+y)=x<br />
-<br />
-x*y+x*¬y=x<br />
-(x+y)*(x+¬y)=x<br />
-<br />
-¬(x*y)=¬x+¬y<br />
-¬(x+y)=¬x*¬y<br />
-<br />
-x+¬x*y=x+y<br />
-x*(¬x+y)=x*y<br />
-<br />
-x*y+¬x*z+y*z=x*y+¬x*z<br />
-(x+y)*(¬x+z)*(y+z)=(x+y)*(¬x+z)</p></div><p>除了第1行之外，这些公式都是每两行一组的，每组的两个公式就像对联一样：把其中一个公式中的*换成+、+换成*、0换成1、1换成0，就变成了与它对称的另一个公式。这些定理都可以通过真值表证明，更多细节可参考有关数字逻辑的教材，例如<a class="xref" href="bi01.html#bibli.vhdl" title="Fundamentals of Digital Logic with VHDL Design">[<abbr class="abbrev">数字逻辑基础</abbr>]</a>。我们将在本节的练习题中强化训练对这些定理的理解。</p><p>目前为止介绍的这些运算符的优先级顺序是：!高于* / %，高于+ -，高于&gt; &lt; &gt;= &lt;=，高于== !=，高于&amp;&amp;，高于||，高于=。写一个控制表达式很可能同时用到这些运算符中的多个，如果记不清楚运算符的优先级一定要多套括号。我们将在<a class="xref" href="ch16s04.html#op.summary">第 4 节 “运算符总结”</a>总结C语言所有运算符的优先级和结合性。</p><div class="simplesect" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2719432"></a>习题</h3></div></div></div><p>1、把代码段</p><pre class="programlisting">if (x &gt; 0 &amp;&amp; x &lt; 10);
+}</pre><p>&#x6211;&#x4EEC;&#x4E5F;&#x53EF;&#x4EE5;&#x7528;&#x903B;&#x8F91;&#x4E0E;&#xFF08;Logical AND&#xFF09;<a id="id2719020" class="indexterm"></a>&#x8FD0;&#x7B97;&#x7B26;&#x8868;&#x793A;&#x8FD9;&#x4E24;&#x4E2A;&#x6761;&#x4EF6;&#x540C;&#x65F6;&#x6210;&#x7ACB;&#x3002;&#x903B;&#x8F91;&#x4E0E;&#x8FD0;&#x7B97;&#x7B26;&#x5728;C&#x8BED;&#x8A00;&#x4E2D;&#x5199;&#x6210;&#x4E24;&#x4E2A;&amp;&#x53F7;&#xFF08;Ampersand&#xFF09;<a id="id2719029" class="indexterm"></a>&#xFF0C;&#x4E0A;&#x9762;&#x7684;&#x8BED;&#x53E5;&#x53EF;&#x4EE5;&#x6539;&#x5199;&#x4E3A;&#xFF1A;</p><pre class="programlisting">if (a &lt; b &amp;&amp; b &lt; c) {
+	printf(&quot;b is between a and c.\n&quot;);
+}</pre><p>&#x5BF9;&#x4E8E;<code class="literal">a &lt; b &amp;&amp; b &lt; c</code>&#x8FD9;&#x4E2A;&#x63A7;&#x5236;&#x8868;&#x8FBE;&#x5F0F;&#xFF0C;&#x8981;&#x6C42;&#x201C;<span class="quote"><code class="literal">a &lt; b</code>&#x7684;&#x503C;&#x975E;0</span>&#x201D;&#x548C;&#x201C;<span class="quote"><code class="literal">b &lt; c</code>&#x7684;&#x503C;&#x975E;0</span>&#x201D;&#x8FD9;&#x4E24;&#x4E2A;&#x6761;&#x4EF6;&#x540C;&#x65F6;&#x6210;&#x7ACB;&#x6574;&#x4E2A;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x503C;&#x624D;&#x4E3A;1&#xFF0C;&#x5426;&#x5219;&#x6574;&#x4E2A;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x503C;&#x4E3A;0&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x53EA;&#x6709;&#x4E24;&#x4E2A;&#x6761;&#x4EF6;&#x90FD;&#x4E3A;&#x771F;&#xFF0C;&#x5B83;&#x4EEC;&#x505A;&#x903B;&#x8F91;&#x4E0E;&#x8FD0;&#x7B97;&#x7684;&#x7ED3;&#x679C;&#x624D;&#x4E3A;&#x771F;&#xFF0C;&#x6709;&#x4E00;&#x4E2A;&#x6761;&#x4EF6;&#x4E3A;&#x5047;&#xFF0C;&#x5219;&#x903B;&#x8F91;&#x4E0E;&#x8FD0;&#x7B97;&#x7684;&#x7ED3;&#x679C;&#x4E3A;&#x5047;&#xFF0C;&#x5982;&#x4E0B;&#x8868;&#x6240;&#x793A;&#xFF1A;</p><div class="table"><a id="id2719074"></a><p class="title"><b>&#x8868;&#xA0;4.2.&#xA0;AND&#x7684;&#x771F;&#x503C;&#x8868;</b></p><div class="table-contents"><table summary="AND&#x7684;&#x771F;&#x503C;&#x8868;" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>A</th><th>B</th><th>A AND B</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></tbody></table></div></div><br class="table-break"><p>&#x8FD9;&#x79CD;&#x8868;&#x79F0;&#x4E3A;&#x771F;&#x503C;&#x8868;&#xFF08;Truth Table&#xFF09;<a id="id2719136" class="indexterm"></a>&#x3002;&#x6CE8;&#x610F;&#x903B;&#x8F91;&#x4E0E;&#x8FD0;&#x7B97;&#x7684;&#x64CD;&#x4F5C;&#x6570;&#x4EE5;&#x975E;0&#x8868;&#x793A;&#x771F;&#x4EE5;0&#x8868;&#x793A;&#x5047;&#xFF0C;&#x800C;&#x8FD0;&#x7B97;&#x7ED3;&#x679C;&#x4EE5;1&#x8868;&#x793A;&#x771F;&#x4EE5;0&#x8868;&#x793A;&#x5047;&#xFF08;&#x7C7B;&#x578B;&#x662F;<code class="literal">int</code>&#xFF09;&#xFF0C;&#x6211;&#x4EEC;&#x5FFD;&#x7565;&#x8FD9;&#x4E9B;&#x7EC6;&#x5FAE;&#x7684;&#x5DEE;&#x522B;&#xFF0C;&#x5728;&#x8868;&#x4E2D;&#x5168;&#x90E8;&#x4EE5;1&#x8868;&#x793A;&#x771F;&#x4EE5;0&#x8868;&#x793A;&#x5047;&#x3002;C&#x8BED;&#x8A00;&#x8FD8;&#x63D0;&#x4F9B;&#x4E86;&#x903B;&#x8F91;&#x6216;&#xFF08;Logical OR&#xFF09;<a id="id2719154" class="indexterm"></a>&#x8FD0;&#x7B97;&#x7B26;&#xFF0C;&#x5199;&#x6210;&#x4E24;&#x4E2A;|&#x7EBF;&#xFF08;Pipe Sign&#xFF09;<a id="id2719161" class="indexterm"></a>&#xFF0C;&#x903B;&#x8F91;&#x975E;&#xFF08;Logical NOT&#xFF09;<a id="id2719169" class="indexterm"></a>&#x8FD0;&#x7B97;&#x7B26;&#xFF0C;&#x5199;&#x6210;&#x4E00;&#x4E2A;!&#x53F7;&#xFF08;Exclamation Mark&#xFF09;<a id="id2719177" class="indexterm"></a>&#xFF0C;&#x5B83;&#x4EEC;&#x7684;&#x771F;&#x503C;&#x8868;&#x5982;&#x4E0B;&#xFF1A;</p><div class="table"><a id="id2719186"></a><p class="title"><b>&#x8868;&#xA0;4.3.&#xA0;OR&#x7684;&#x771F;&#x503C;&#x8868;</b></p><div class="table-contents"><table summary="OR&#x7684;&#x771F;&#x503C;&#x8868;" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>A</th><th>B</th><th>A OR B</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>1</td></tr><tr><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></tbody></table></div></div><br class="table-break"><div class="table"><a id="id2719245"></a><p class="title"><b>&#x8868;&#xA0;4.4.&#xA0;NOT&#x7684;&#x771F;&#x503C;&#x8868;</b></p><div class="table-contents"><table summary="NOT&#x7684;&#x771F;&#x503C;&#x8868;" border="1"><colgroup><col><col></colgroup><thead><tr><th>A</th><th>NOT A</th></tr></thead><tbody><tr><td>0</td><td>1</td></tr><tr><td>1</td><td>0</td></tr></tbody></table></div></div><br class="table-break"><p>&#x903B;&#x8F91;&#x6216;&#x8868;&#x793A;&#x4E24;&#x4E2A;&#x6761;&#x4EF6;&#x53EA;&#x8981;&#x6709;&#x4E00;&#x4E2A;&#x4E3A;&#x771F;&#xFF0C;&#x5B83;&#x4EEC;&#x505A;&#x903B;&#x8F91;&#x6216;&#x8FD0;&#x7B97;&#x7684;&#x7ED3;&#x679C;&#x5C31;&#x4E3A;&#x771F;&#xFF0C;&#x53EA;&#x6709;&#x4E24;&#x4E2A;&#x6761;&#x4EF6;&#x90FD;&#x4E3A;&#x5047;&#xFF0C;&#x903B;&#x8F91;&#x6216;&#x8FD0;&#x7B97;&#x7684;&#x7ED3;&#x679C;&#x624D;&#x4E3A;&#x5047;&#x3002;&#x903B;&#x8F91;&#x975E;&#x7684;&#x4F5C;&#x7528;&#x662F;&#x5BF9;&#x539F;&#x6765;&#x7684;&#x903B;&#x8F91;&#x503C;&#x53D6;&#x53CD;&#xFF0C;&#x539F;&#x6765;&#x662F;&#x771F;&#x7684;&#x5C31;&#x662F;&#x5047;&#xFF0C;&#x539F;&#x6765;&#x662F;&#x5047;&#x7684;&#x5C31;&#x662F;&#x771F;&#x3002;&#x903B;&#x8F91;&#x975E;&#x8FD0;&#x7B97;&#x7B26;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x64CD;&#x4F5C;&#x6570;&#xFF0C;&#x79F0;&#x4E3A;&#x5355;&#x76EE;&#x8FD0;&#x7B97;&#x7B26;&#xFF08;Unary Operator&#xFF09;<a id="id2719295" class="indexterm"></a>&#xFF0C;&#x4EE5;&#x524D;&#x8BB2;&#x8FC7;&#x7684;&#x52A0;&#x51CF;&#x4E58;&#x9664;&#x3001;&#x8D4B;&#x503C;&#x3001;&#x76F8;&#x7B49;&#x6027;&#x3001;&#x5173;&#x7CFB;&#x3001;&#x903B;&#x8F91;&#x4E0E;&#x3001;&#x903B;&#x8F91;&#x6216;&#x8FD0;&#x7B97;&#x7B26;&#x90FD;&#x6709;&#x4E24;&#x4E2A;&#x64CD;&#x4F5C;&#x6570;&#xFF0C;&#x79F0;&#x4E3A;&#x53CC;&#x76EE;&#x8FD0;&#x7B97;&#x7B26;&#xFF08;Binary Operator&#xFF09;<a id="id2719306" class="indexterm"></a>&#x3002;</p><p>&#x5173;&#x4E8E;&#x903B;&#x8F91;&#x8FD0;&#x7B97;&#x7684;&#x6570;&#x5B66;&#x4F53;&#x7CFB;&#x79F0;&#x4E3A;&#x5E03;&#x5C14;&#x4EE3;&#x6570;&#xFF08;Boolean Algebra&#xFF09;<a id="id2719318" class="indexterm"></a>&#xFF0C;&#x4EE5;&#x5B83;&#x7684;&#x521B;&#x59CB;&#x4EBA;&#x5E03;&#x5C14;&#x547D;&#x540D;&#x3002;&#x5728;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x4E2D;&#x8868;&#x793A;&#x771F;&#x548C;&#x5047;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x53EB;&#x505A;&#x5E03;&#x5C14;&#x7C7B;&#x578B;&#xFF0C;&#x5728;C&#x8BED;&#x8A00;&#x4E2D;&#x901A;&#x5E38;&#x7528;<code class="literal">int</code>&#x578B;&#x6765;&#x8868;&#x793A;&#xFF0C;&#x975E;0&#x8868;&#x793A;&#x771F;&#xFF0C;0&#x8868;&#x793A;&#x5047;<sup>[<a id="id2719335" href="#ftn.id2719335" class="footnote">6</a>]</sup>&#x3002;&#x5E03;&#x5C14;&#x903B;&#x8F91;&#x662F;&#x5199;&#x7A0B;&#x5E8F;&#x7684;&#x57FA;&#x672C;&#x529F;&#x4E4B;&#x4E00;&#xFF0C;&#x7A0B;&#x5E8F;&#x4E2D;&#x7684;&#x5F88;&#x591A;&#x9519;&#x8BEF;&#x90FD;&#x53EF;&#x4EE5;&#x5F52;&#x56E0;&#x4E8E;&#x903B;&#x8F91;&#x9519;&#x8BEF;&#x3002;&#x4EE5;&#x4E0B;&#x662F;&#x4E00;&#x4E9B;&#x5E03;&#x5C14;&#x4EE3;&#x6570;&#x7684;&#x57FA;&#x672C;&#x5B9A;&#x7406;&#xFF0C;&#x4E3A;&#x4E86;&#x7B80;&#x6D01;&#x6613;&#x8BFB;&#xFF0C;&#x771F;&#x548C;&#x5047;&#x7528;1&#x548C;0&#x8868;&#x793A;&#xFF0C;AND&#x7528;*&#x53F7;&#x8868;&#x793A;&#xFF0C;OR&#x7528;+&#x53F7;&#x8868;&#x793A;&#xFF08;&#x4ECE;&#x771F;&#x503C;&#x8868;&#x53EF;&#x4EE5;&#x770B;&#x51FA;AND&#x548C;OR&#x8FD0;&#x7B97;&#x786E;&#x5B9E;&#x6709;&#x70B9;&#x50CF;&#x4E58;&#x6CD5;&#x548C;&#x52A0;&#x6CD5;&#x8FD0;&#x7B97;&#xFF09;&#xFF0C;NOT&#x7528;&#xAC;&#x8868;&#x793A;&#xFF0C;&#x53D8;&#x91CF;<code class="literal">x</code>&#x3001;<code class="literal">y</code>&#x3001;<code class="literal">z</code>&#x7684;&#x503C;&#x53EF;&#x80FD;&#x662F;0&#x4E5F;&#x53EF;&#x80FD;&#x662F;1&#x3002;</p><div class="literallayout"><p>&#xAC;&#xAC;x=x<br>
+<br>
+x*0=0<br>
+x+1=1<br>
+<br>
+x*1=x<br>
+x+0=x<br>
+<br>
+x*x=x<br>
+x+x=x<br>
+<br>
+x*&#xAC;x=0<br>
+x+&#xAC;x=1<br>
+<br>
+x*y=y*x<br>
+x+y=y+x<br>
+<br>
+x*(y*z)=(x*y)*z<br>
+x+(y+z)=(x+y)+z<br>
+<br>
+x*(y+z)=x*y+x*z<br>
+x+y*z=(x+y)*(x+z)<br>
+<br>
+x+x*y=x<br>
+x*(x+y)=x<br>
+<br>
+x*y+x*&#xAC;y=x<br>
+(x+y)*(x+&#xAC;y)=x<br>
+<br>
+&#xAC;(x*y)=&#xAC;x+&#xAC;y<br>
+&#xAC;(x+y)=&#xAC;x*&#xAC;y<br>
+<br>
+x+&#xAC;x*y=x+y<br>
+x*(&#xAC;x+y)=x*y<br>
+<br>
+x*y+&#xAC;x*z+y*z=x*y+&#xAC;x*z<br>
+(x+y)*(&#xAC;x+z)*(y+z)=(x+y)*(&#xAC;x+z)</p></div><p>&#x9664;&#x4E86;&#x7B2C;1&#x884C;&#x4E4B;&#x5916;&#xFF0C;&#x8FD9;&#x4E9B;&#x516C;&#x5F0F;&#x90FD;&#x662F;&#x6BCF;&#x4E24;&#x884C;&#x4E00;&#x7EC4;&#x7684;&#xFF0C;&#x6BCF;&#x7EC4;&#x7684;&#x4E24;&#x4E2A;&#x516C;&#x5F0F;&#x5C31;&#x50CF;&#x5BF9;&#x8054;&#x4E00;&#x6837;&#xFF1A;&#x628A;&#x5176;&#x4E2D;&#x4E00;&#x4E2A;&#x516C;&#x5F0F;&#x4E2D;&#x7684;*&#x6362;&#x6210;+&#x3001;+&#x6362;&#x6210;*&#x3001;0&#x6362;&#x6210;1&#x3001;1&#x6362;&#x6210;0&#xFF0C;&#x5C31;&#x53D8;&#x6210;&#x4E86;&#x4E0E;&#x5B83;&#x5BF9;&#x79F0;&#x7684;&#x53E6;&#x4E00;&#x4E2A;&#x516C;&#x5F0F;&#x3002;&#x8FD9;&#x4E9B;&#x5B9A;&#x7406;&#x90FD;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x771F;&#x503C;&#x8868;&#x8BC1;&#x660E;&#xFF0C;&#x66F4;&#x591A;&#x7EC6;&#x8282;&#x53EF;&#x53C2;&#x8003;&#x6709;&#x5173;&#x6570;&#x5B57;&#x903B;&#x8F91;&#x7684;&#x6559;&#x6750;&#xFF0C;&#x4F8B;&#x5982;<a class="xref" href="bi01.html#bibli.vhdl" title="Fundamentals of Digital Logic with VHDL Design">[<abbr class="abbrev">&#x6570;&#x5B57;&#x903B;&#x8F91;&#x57FA;&#x7840;</abbr>]</a>&#x3002;&#x6211;&#x4EEC;&#x5C06;&#x5728;&#x672C;&#x8282;&#x7684;&#x7EC3;&#x4E60;&#x9898;&#x4E2D;&#x5F3A;&#x5316;&#x8BAD;&#x7EC3;&#x5BF9;&#x8FD9;&#x4E9B;&#x5B9A;&#x7406;&#x7684;&#x7406;&#x89E3;&#x3002;</p><p>&#x76EE;&#x524D;&#x4E3A;&#x6B62;&#x4ECB;&#x7ECD;&#x7684;&#x8FD9;&#x4E9B;&#x8FD0;&#x7B97;&#x7B26;&#x7684;&#x4F18;&#x5148;&#x7EA7;&#x987A;&#x5E8F;&#x662F;&#xFF1A;!&#x9AD8;&#x4E8E;* / %&#xFF0C;&#x9AD8;&#x4E8E;+ -&#xFF0C;&#x9AD8;&#x4E8E;&gt; &lt; &gt;= &lt;=&#xFF0C;&#x9AD8;&#x4E8E;== !=&#xFF0C;&#x9AD8;&#x4E8E;&amp;&amp;&#xFF0C;&#x9AD8;&#x4E8E;||&#xFF0C;&#x9AD8;&#x4E8E;=&#x3002;&#x5199;&#x4E00;&#x4E2A;&#x63A7;&#x5236;&#x8868;&#x8FBE;&#x5F0F;&#x5F88;&#x53EF;&#x80FD;&#x540C;&#x65F6;&#x7528;&#x5230;&#x8FD9;&#x4E9B;&#x8FD0;&#x7B97;&#x7B26;&#x4E2D;&#x7684;&#x591A;&#x4E2A;&#xFF0C;&#x5982;&#x679C;&#x8BB0;&#x4E0D;&#x6E05;&#x695A;&#x8FD0;&#x7B97;&#x7B26;&#x7684;&#x4F18;&#x5148;&#x7EA7;&#x4E00;&#x5B9A;&#x8981;&#x591A;&#x5957;&#x62EC;&#x53F7;&#x3002;&#x6211;&#x4EEC;&#x5C06;&#x5728;<a class="xref" href="ch16s04.html#op.summary">&#x7B2C;&#xA0;4&#xA0;&#x8282; &#x201C;&#x8FD0;&#x7B97;&#x7B26;&#x603B;&#x7ED3;&#x201D;</a>&#x603B;&#x7ED3;C&#x8BED;&#x8A00;&#x6240;&#x6709;&#x8FD0;&#x7B97;&#x7B26;&#x7684;&#x4F18;&#x5148;&#x7EA7;&#x548C;&#x7ED3;&#x5408;&#x6027;&#x3002;</p><div class="simplesect" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2719432"></a>&#x4E60;&#x9898;</h3></div></div></div><p>1&#x3001;&#x628A;&#x4EE3;&#x7801;&#x6BB5;</p><pre class="programlisting">if (x &gt; 0 &amp;&amp; x &lt; 10);
 else
-	printf("x is out of range.\n");</pre><p>改写成下面这种形式：</p><pre class="programlisting">if (____ || ____)
-	printf("x is out of range.\n");</pre><p>____应该怎么填？</p><p>2、把代码段：</p><pre class="programlisting">if (x &gt; 0)
-	printf("Test OK!\n");
+	printf(&quot;x is out of range.\n&quot;);</pre><p>&#x6539;&#x5199;&#x6210;&#x4E0B;&#x9762;&#x8FD9;&#x79CD;&#x5F62;&#x5F0F;&#xFF1A;</p><pre class="programlisting">if (____ || ____)
+	printf(&quot;x is out of range.\n&quot;);</pre><p>____&#x5E94;&#x8BE5;&#x600E;&#x4E48;&#x586B;&#xFF1F;</p><p>2&#x3001;&#x628A;&#x4EE3;&#x7801;&#x6BB5;&#xFF1A;</p><pre class="programlisting">if (x &gt; 0)
+	printf(&quot;Test OK!\n&quot;);
 else if (x &lt;= 0 &amp;&amp; y &gt; 0)
-	printf("Test OK!\n");
+	printf(&quot;Test OK!\n&quot;);
 else
-	printf("Test failed!\n");</pre><p>改写成下面这种形式：</p><pre class="programlisting">if (____ &amp;&amp; ____)
-	printf("Test failed!\n");
+	printf(&quot;Test failed!\n&quot;);</pre><p>&#x6539;&#x5199;&#x6210;&#x4E0B;&#x9762;&#x8FD9;&#x79CD;&#x5F62;&#x5F0F;&#xFF1A;</p><pre class="programlisting">if (____ &amp;&amp; ____)
+	printf(&quot;Test failed!\n&quot;);
 else
-	printf("Test OK!\n");</pre><p>____应该怎么填？</p><p>3、有这样一段代码：</p><pre class="programlisting">if (x &gt; 1 &amp;&amp; y != 1) {
+	printf(&quot;Test OK!\n&quot;);</pre><p>____&#x5E94;&#x8BE5;&#x600E;&#x4E48;&#x586B;&#xFF1F;</p><p>3&#x3001;&#x6709;&#x8FD9;&#x6837;&#x4E00;&#x6BB5;&#x4EE3;&#x7801;&#xFF1A;</p><pre class="programlisting">if (x &gt; 1 &amp;&amp; y != 1) {
 	...
 } else if (x &lt; 1 &amp;&amp; y != 1) {
 	...
 } else {
 	...
-}</pre><p>要进入最后一个<code class="literal">else</code>，x和y需要满足条件____ || ____。这里应该怎么填？</p><p>4、以下哪一个if判断条件是多余的可以去掉？这里所谓的“<span class="quote">多余</span>”是指，某种情况下如果本来应该打印<code class="literal">Test OK!</code>，去掉这个多余条件后仍然打印<code class="literal">Test OK!</code>，如果本来应该打印<code class="literal">Test failed!</code>，去掉这个多余条件后仍然打印<code class="literal">Test failed!</code>。</p><pre class="programlisting">if (x&lt;3 &amp;&amp; y&gt;3)
-	printf("Test OK!\n");
+}</pre><p>&#x8981;&#x8FDB;&#x5165;&#x6700;&#x540E;&#x4E00;&#x4E2A;<code class="literal">else</code>&#xFF0C;x&#x548C;y&#x9700;&#x8981;&#x6EE1;&#x8DB3;&#x6761;&#x4EF6;____ || ____&#x3002;&#x8FD9;&#x91CC;&#x5E94;&#x8BE5;&#x600E;&#x4E48;&#x586B;&#xFF1F;</p><p>4&#x3001;&#x4EE5;&#x4E0B;&#x54EA;&#x4E00;&#x4E2A;if&#x5224;&#x65AD;&#x6761;&#x4EF6;&#x662F;&#x591A;&#x4F59;&#x7684;&#x53EF;&#x4EE5;&#x53BB;&#x6389;&#xFF1F;&#x8FD9;&#x91CC;&#x6240;&#x8C13;&#x7684;&#x201C;<span class="quote">&#x591A;&#x4F59;</span>&#x201D;&#x662F;&#x6307;&#xFF0C;&#x67D0;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#x5982;&#x679C;&#x672C;&#x6765;&#x5E94;&#x8BE5;&#x6253;&#x5370;<code class="literal">Test OK!</code>&#xFF0C;&#x53BB;&#x6389;&#x8FD9;&#x4E2A;&#x591A;&#x4F59;&#x6761;&#x4EF6;&#x540E;&#x4ECD;&#x7136;&#x6253;&#x5370;<code class="literal">Test OK!</code>&#xFF0C;&#x5982;&#x679C;&#x672C;&#x6765;&#x5E94;&#x8BE5;&#x6253;&#x5370;<code class="literal">Test failed!</code>&#xFF0C;&#x53BB;&#x6389;&#x8FD9;&#x4E2A;&#x591A;&#x4F59;&#x6761;&#x4EF6;&#x540E;&#x4ECD;&#x7136;&#x6253;&#x5370;<code class="literal">Test failed!</code>&#x3002;</p><pre class="programlisting">if (x&lt;3 &amp;&amp; y&gt;3)
+	printf(&quot;Test OK!\n&quot;);
 else if (x&gt;=3 &amp;&amp; y&gt;=3)
-	printf("Test OK!\n");
+	printf(&quot;Test OK!\n&quot;);
 else if (z&gt;3 &amp;&amp; x&gt;=3)
-	printf("Test OK!\n");
+	printf(&quot;Test OK!\n&quot;);
 else if (z&lt;=3 &amp;&amp; y&gt;=3)
-	printf("Test OK!\n");
+	printf(&quot;Test OK!\n&quot;);
 else
-	printf("Test failed!\n");</pre></div><div class="footnotes"><br /><hr width="100" align="left" /><div class="footnote"><p><sup>[<a id="ftn.id2719335" href="#id2719335" class="para">6</a>] </sup>C99也定义了专门的布尔类型<code class="literal">_Bool</code>，但目前没有被广泛使用。</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch04s02.html">上一页</a> </td><td width="20%" align="center"><a accesskey="u" href="ch04.html">上一级</a></td><td width="40%" align="right"> <a accesskey="n" href="ch04s04.html">下一页</a></td></tr><tr><td width="40%" align="left" valign="top">2. if/else语句 </td><td width="20%" align="center"><a accesskey="h" href="index.html">起始页</a></td><td width="40%" align="right" valign="top"> 4. switch语句</td></tr></table></div></body></html>
+	printf(&quot;Test failed!\n&quot;);</pre></div><div class="footnotes"><br><hr width="100" align="left"><div class="footnote"><p><sup>[<a id="ftn.id2719335" href="#id2719335" class="para">6</a>] </sup>C99&#x4E5F;&#x5B9A;&#x4E49;&#x4E86;&#x4E13;&#x95E8;&#x7684;&#x5E03;&#x5C14;&#x7C7B;&#x578B;<code class="literal">_Bool</code>&#xFF0C;&#x4F46;&#x76EE;&#x524D;&#x6CA1;&#x6709;&#x88AB;&#x5E7F;&#x6CDB;&#x4F7F;&#x7528;&#x3002;</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="ch04s02.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><td width="20%" align="center"><a accesskey="u" href="ch04.html">&#x4E0A;&#x4E00;&#x7EA7;</a></td><td width="40%" align="right">&#xA0;<a accesskey="n" href="ch04s04.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr><tr><td width="40%" align="left" valign="top">2.&#xA0;if/else&#x8BED;&#x53E5;&#xA0;</td><td width="20%" align="center"><a accesskey="h" href="index.html">&#x8D77;&#x59CB;&#x9875;</a></td><td width="40%" align="right" valign="top">&#xA0;4.&#xA0;switch&#x8BED;&#x53E5;</td></tr></tbody></table></div>
+</body></html>

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>2. 断点</title><link rel="stylesheet" href="styles.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.73.2" /><link rel="start" href="index.html" title="Linux C编程一站式学习" /><link rel="up" href="ch10.html" title="第 10 章 gdb" /><link rel="prev" href="ch10s01.html" title="1. 单步执行和跟踪函数调用" /><link rel="next" href="ch10s03.html" title="3. 观察点" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. 断点</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s01.html">上一页</a> </td><th width="60%" align="center">第 10 章 gdb</th><td width="20%" align="right"> <a accesskey="n" href="ch10s03.html">下一页</a></td></tr></table><hr /></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2741278"></a>2. 断点</h2></div></div></div><p>看以下程序：</p><div class="example"><a id="id2741289"></a><p class="title"><b>例 10.2. 断点调试实例</b></p><div class="example-contents"><pre class="programlisting">#include &lt;stdio.h&gt;
+<!--?xml version="1.0" encoding="UTF-8" standalone="no"?--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>2.&#xA0;&#x65AD;&#x70B9;</title><link rel="stylesheet" href="styles.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="Linux C&#x7F16;&#x7A0B;&#x4E00;&#x7AD9;&#x5F0F;&#x5B66;&#x4E60;"><link rel="up" href="ch10.html" title="&#x7B2C;&#xA0;10&#xA0;&#x7AE0;&#xA0;gdb"><link rel="prev" href="ch10s01.html" title="1.&#xA0;&#x5355;&#x6B65;&#x6267;&#x884C;&#x548C;&#x8DDF;&#x8E2A;&#x51FD;&#x6570;&#x8C03;&#x7528;"><link rel="next" href="ch10s03.html" title="3.&#xA0;&#x89C2;&#x5BDF;&#x70B9;"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">2.&#xA0;&#x65AD;&#x70B9;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch10s01.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><th width="60%" align="center">&#x7B2C;&#xA0;10&#xA0;&#x7AE0;&#xA0;gdb</th><td width="20%" align="right">&#xA0;<a accesskey="n" href="ch10s03.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr></tbody></table><hr></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2741278"></a>2.&#xA0;&#x65AD;&#x70B9;</h2></div></div></div><p>&#x770B;&#x4EE5;&#x4E0B;&#x7A0B;&#x5E8F;&#xFF1A;</p><div class="example"><a id="id2741289"></a><p class="title"><b>&#x4F8B;&#xA0;10.2.&#xA0;&#x65AD;&#x70B9;&#x8C03;&#x8BD5;&#x5B9E;&#x4F8B;</b></p><div class="example-contents"><pre class="programlisting">#include &lt;stdio.h&gt;
 
 int main(void)
 {
@@ -8,64 +6,64 @@ int main(void)
 	char input[5];
 
 	while (1) {
-		scanf("%s", input);
-		for (i = 0; input[i] != '\0'; i++)
-			sum = sum*10 + input[i] - '0';
-		printf("input=%d\n", sum);
+		scanf(&quot;%s&quot;, input);
+		for (i = 0; input[i] != &apos;\0&apos;; i++)
+			sum = sum*10 + input[i] - &apos;0&apos;;
+		printf(&quot;input=%d\n&quot;, sum);
 	}
 	return 0;
-}</pre></div></div><br class="example-break" /><p>这个程序的作用是：首先从键盘读入一串数字存到字符数组<code class="literal">input</code>中，然后转换成整型存到<code class="literal">sum</code>中，然后打印出来，一直这样循环下去。<code class="literal">scanf("%s", input);</code>这个调用的功能是等待用户输入一个字符串并回车，<code class="literal">scanf</code>把其中第一段非空白（非空格、Tab、换行）的字符串保存到<code class="literal">input</code>数组中，并自动在末尾添加<code class="literal">'\0'</code>。接下来的循环从左到右扫描字符串并把每个数字累加到结果中，例如输入是<code class="literal">"2345"</code>，则循环累加的过程是(((0*10+2)*10+3)*10+4)*10+5=2345。注意字符型的<code class="literal">'2'</code>要减去<code class="literal">'0'</code>的ASCII码才能转换成整数值2。下面编译运行程序看看有什么问题：</p><pre class="screen">$ gcc main.c -g -o main
+}</pre></div></div><br class="example-break"><p>&#x8FD9;&#x4E2A;&#x7A0B;&#x5E8F;&#x7684;&#x4F5C;&#x7528;&#x662F;&#xFF1A;&#x9996;&#x5148;&#x4ECE;&#x952E;&#x76D8;&#x8BFB;&#x5165;&#x4E00;&#x4E32;&#x6570;&#x5B57;&#x5B58;&#x5230;&#x5B57;&#x7B26;&#x6570;&#x7EC4;<code class="literal">input</code>&#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x8F6C;&#x6362;&#x6210;&#x6574;&#x578B;&#x5B58;&#x5230;<code class="literal">sum</code>&#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x6253;&#x5370;&#x51FA;&#x6765;&#xFF0C;&#x4E00;&#x76F4;&#x8FD9;&#x6837;&#x5FAA;&#x73AF;&#x4E0B;&#x53BB;&#x3002;<code class="literal">scanf(&quot;%s&quot;, input);</code>&#x8FD9;&#x4E2A;&#x8C03;&#x7528;&#x7684;&#x529F;&#x80FD;&#x662F;&#x7B49;&#x5F85;&#x7528;&#x6237;&#x8F93;&#x5165;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x5E76;&#x56DE;&#x8F66;&#xFF0C;<code class="literal">scanf</code>&#x628A;&#x5176;&#x4E2D;&#x7B2C;&#x4E00;&#x6BB5;&#x975E;&#x7A7A;&#x767D;&#xFF08;&#x975E;&#x7A7A;&#x683C;&#x3001;Tab&#x3001;&#x6362;&#x884C;&#xFF09;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x4FDD;&#x5B58;&#x5230;<code class="literal">input</code>&#x6570;&#x7EC4;&#x4E2D;&#xFF0C;&#x5E76;&#x81EA;&#x52A8;&#x5728;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;<code class="literal">&apos;\0&apos;</code>&#x3002;&#x63A5;&#x4E0B;&#x6765;&#x7684;&#x5FAA;&#x73AF;&#x4ECE;&#x5DE6;&#x5230;&#x53F3;&#x626B;&#x63CF;&#x5B57;&#x7B26;&#x4E32;&#x5E76;&#x628A;&#x6BCF;&#x4E2A;&#x6570;&#x5B57;&#x7D2F;&#x52A0;&#x5230;&#x7ED3;&#x679C;&#x4E2D;&#xFF0C;&#x4F8B;&#x5982;&#x8F93;&#x5165;&#x662F;<code class="literal">&quot;2345&quot;</code>&#xFF0C;&#x5219;&#x5FAA;&#x73AF;&#x7D2F;&#x52A0;&#x7684;&#x8FC7;&#x7A0B;&#x662F;(((0*10+2)*10+3)*10+4)*10+5=2345&#x3002;&#x6CE8;&#x610F;&#x5B57;&#x7B26;&#x578B;&#x7684;<code class="literal">&apos;2&apos;</code>&#x8981;&#x51CF;&#x53BB;<code class="literal">&apos;0&apos;</code>&#x7684;ASCII&#x7801;&#x624D;&#x80FD;&#x8F6C;&#x6362;&#x6210;&#x6574;&#x6570;&#x503C;2&#x3002;&#x4E0B;&#x9762;&#x7F16;&#x8BD1;&#x8FD0;&#x884C;&#x7A0B;&#x5E8F;&#x770B;&#x770B;&#x6709;&#x4EC0;&#x4E48;&#x95EE;&#x9898;&#xFF1A;</p><pre class="screen">$ gcc main.c -g -o main
 $ ./main 
 123
 input=123
 234
 input=123234
-（Ctrl-C退出程序）
-$</pre><p>又是这种现象，第一次是对的，第二次就不对。可是这个程序我们并没有忘了赋初值，不仅<code class="literal">sum</code>赋了初值，连不必赋初值的i都赋了初值。读者先试试只看代码能不能看出错误原因。下面来调试：</p><pre class="screen">$ gdb main
+&#xFF08;Ctrl-C&#x9000;&#x51FA;&#x7A0B;&#x5E8F;&#xFF09;
+$</pre><p>&#x53C8;&#x662F;&#x8FD9;&#x79CD;&#x73B0;&#x8C61;&#xFF0C;&#x7B2C;&#x4E00;&#x6B21;&#x662F;&#x5BF9;&#x7684;&#xFF0C;&#x7B2C;&#x4E8C;&#x6B21;&#x5C31;&#x4E0D;&#x5BF9;&#x3002;&#x53EF;&#x662F;&#x8FD9;&#x4E2A;&#x7A0B;&#x5E8F;&#x6211;&#x4EEC;&#x5E76;&#x6CA1;&#x6709;&#x5FD8;&#x4E86;&#x8D4B;&#x521D;&#x503C;&#xFF0C;&#x4E0D;&#x4EC5;<code class="literal">sum</code>&#x8D4B;&#x4E86;&#x521D;&#x503C;&#xFF0C;&#x8FDE;&#x4E0D;&#x5FC5;&#x8D4B;&#x521D;&#x503C;&#x7684;i&#x90FD;&#x8D4B;&#x4E86;&#x521D;&#x503C;&#x3002;&#x8BFB;&#x8005;&#x5148;&#x8BD5;&#x8BD5;&#x53EA;&#x770B;&#x4EE3;&#x7801;&#x80FD;&#x4E0D;&#x80FD;&#x770B;&#x51FA;&#x9519;&#x8BEF;&#x539F;&#x56E0;&#x3002;&#x4E0B;&#x9762;&#x6765;&#x8C03;&#x8BD5;&#xFF1A;</p><pre class="screen">$ gdb main
 ...
 (gdb) start
 Breakpoint 1 at 0x80483b5: file main.c, line 5.
 Starting program: /home/akaedu/main 
 main () at main.c:5
-5		int sum = 0, i = 0;</pre><p>有了上一次的经验，<code class="literal">sum</code>被列为重点怀疑对象，我们可以用<code class="literal">display</code>命令使得每次停下来的时候都显示当前<code class="literal">sum</code>的值，然后继续往下走：</p><pre class="screen">(gdb) display sum
+5		int sum = 0, i = 0;</pre><p>&#x6709;&#x4E86;&#x4E0A;&#x4E00;&#x6B21;&#x7684;&#x7ECF;&#x9A8C;&#xFF0C;<code class="literal">sum</code>&#x88AB;&#x5217;&#x4E3A;&#x91CD;&#x70B9;&#x6000;&#x7591;&#x5BF9;&#x8C61;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x7528;<code class="literal">display</code>&#x547D;&#x4EE4;&#x4F7F;&#x5F97;&#x6BCF;&#x6B21;&#x505C;&#x4E0B;&#x6765;&#x7684;&#x65F6;&#x5019;&#x90FD;&#x663E;&#x793A;&#x5F53;&#x524D;<code class="literal">sum</code>&#x7684;&#x503C;&#xFF0C;&#x7136;&#x540E;&#x7EE7;&#x7EED;&#x5F80;&#x4E0B;&#x8D70;&#xFF1A;</p><pre class="screen">(gdb) display sum
 1: sum = -1208103488
 (gdb) n
-9			scanf("%s", input);
+9			scanf(&quot;%s&quot;, input);
 1: sum = 0
 (gdb) 
 123
-10			for (i = 0; input[i] != '\0'; i++)
-1: sum = 0</pre><p><code class="literal">undisplay</code>命令可以取消跟踪显示，变量<code class="literal">sum</code>的编号是1，可以用<code class="literal">undisplay 1</code>命令取消它的跟踪显示。这个循环应该没有问题，因为上面第一次输入时打印的结果是正确的。如果不想一步一步走这个循环，可以用<code class="literal">break</code>命令（简写为<code class="literal">b</code>）在第9行设一个断点（Breakpoint）<a id="id2741456" class="indexterm"></a>：</p><pre class="screen">(gdb) l
+10			for (i = 0; input[i] != &apos;\0&apos;; i++)
+1: sum = 0</pre><p><code class="literal">undisplay</code>&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x53D6;&#x6D88;&#x8DDF;&#x8E2A;&#x663E;&#x793A;&#xFF0C;&#x53D8;&#x91CF;<code class="literal">sum</code>&#x7684;&#x7F16;&#x53F7;&#x662F;1&#xFF0C;&#x53EF;&#x4EE5;&#x7528;<code class="literal">undisplay 1</code>&#x547D;&#x4EE4;&#x53D6;&#x6D88;&#x5B83;&#x7684;&#x8DDF;&#x8E2A;&#x663E;&#x793A;&#x3002;&#x8FD9;&#x4E2A;&#x5FAA;&#x73AF;&#x5E94;&#x8BE5;&#x6CA1;&#x6709;&#x95EE;&#x9898;&#xFF0C;&#x56E0;&#x4E3A;&#x4E0A;&#x9762;&#x7B2C;&#x4E00;&#x6B21;&#x8F93;&#x5165;&#x65F6;&#x6253;&#x5370;&#x7684;&#x7ED3;&#x679C;&#x662F;&#x6B63;&#x786E;&#x7684;&#x3002;&#x5982;&#x679C;&#x4E0D;&#x60F3;&#x4E00;&#x6B65;&#x4E00;&#x6B65;&#x8D70;&#x8FD9;&#x4E2A;&#x5FAA;&#x73AF;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;<code class="literal">break</code>&#x547D;&#x4EE4;&#xFF08;&#x7B80;&#x5199;&#x4E3A;<code class="literal">b</code>&#xFF09;&#x5728;&#x7B2C;9&#x884C;&#x8BBE;&#x4E00;&#x4E2A;&#x65AD;&#x70B9;&#xFF08;Breakpoint&#xFF09;<a id="id2741456" class="indexterm"></a>&#xFF1A;</p><pre class="screen">(gdb) l
 5		int sum = 0, i;
 6		char input[5];
 7	
 8		while (1) {
-9			scanf("%s", input);
-10			for (i = 0; input[i] != '\0'; i++)
-11				sum = sum*10 + input[i] - '0';
-12			printf("input=%d\n", sum);
+9			scanf(&quot;%s&quot;, input);
+10			for (i = 0; input[i] != &apos;\0&apos;; i++)
+11				sum = sum*10 + input[i] - &apos;0&apos;;
+12			printf(&quot;input=%d\n&quot;, sum);
 13		}
 14		return 0;
 (gdb) b 9
-Breakpoint 2 at 0x80483bc: file main.c, line 9.</pre><p><code class="literal">break</code>命令的参数也可以是函数名，表示在某个函数开头设断点。现在用<code class="literal">continue</code>命令（简写为<code class="literal">c</code>）连续运行而非单步运行，程序到达断点会自动停下来，这样就可以停在下一次循环的开头：</p><pre class="screen">(gdb) c
+Breakpoint 2 at 0x80483bc: file main.c, line 9.</pre><p><code class="literal">break</code>&#x547D;&#x4EE4;&#x7684;&#x53C2;&#x6570;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x51FD;&#x6570;&#x540D;&#xFF0C;&#x8868;&#x793A;&#x5728;&#x67D0;&#x4E2A;&#x51FD;&#x6570;&#x5F00;&#x5934;&#x8BBE;&#x65AD;&#x70B9;&#x3002;&#x73B0;&#x5728;&#x7528;<code class="literal">continue</code>&#x547D;&#x4EE4;&#xFF08;&#x7B80;&#x5199;&#x4E3A;<code class="literal">c</code>&#xFF09;&#x8FDE;&#x7EED;&#x8FD0;&#x884C;&#x800C;&#x975E;&#x5355;&#x6B65;&#x8FD0;&#x884C;&#xFF0C;&#x7A0B;&#x5E8F;&#x5230;&#x8FBE;&#x65AD;&#x70B9;&#x4F1A;&#x81EA;&#x52A8;&#x505C;&#x4E0B;&#x6765;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x505C;&#x5728;&#x4E0B;&#x4E00;&#x6B21;&#x5FAA;&#x73AF;&#x7684;&#x5F00;&#x5934;&#xFF1A;</p><pre class="screen">(gdb) c
 Continuing.
 input=123
 
 Breakpoint 2, main () at main.c:9
-9			scanf("%s", input);
-1: sum = 123</pre><p>然后输入新的字符串准备转换：</p><pre class="screen">(gdb) n
+9			scanf(&quot;%s&quot;, input);
+1: sum = 123</pre><p>&#x7136;&#x540E;&#x8F93;&#x5165;&#x65B0;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x51C6;&#x5907;&#x8F6C;&#x6362;&#xFF1A;</p><pre class="screen">(gdb) n
 234
-10			for (i = 0; input[i] != '\0'; i++)
-1: sum = 123</pre><p>问题暴露出来了，新的转换应该再次从0开始累加，而<code class="literal">sum</code>现在已经是123了，原因在于新的循环没有把<code class="literal">sum</code>归零。可见断点有助于快速跳过没有问题的代码，然后在有问题的代码上慢慢走慢慢分析，“<span class="quote">断点加单步</span>”是使用调试器的基本方法。至于应该在哪里设置断点，怎么知道哪些代码可以跳过而哪些代码要慢慢走，也要通过对错误现象的分析和假设来确定，以前我们用<code class="literal">printf</code>打印中间结果时也要分析应该在哪里插入<code class="literal">printf</code>，打印哪些中间结果，调试的基本思路是一样的。一次调试可以设置多个断点，用<code class="literal">info</code>命令可以查看已经设置的断点：</p><pre class="screen">(gdb) b 12
+10			for (i = 0; input[i] != &apos;\0&apos;; i++)
+1: sum = 123</pre><p>&#x95EE;&#x9898;&#x66B4;&#x9732;&#x51FA;&#x6765;&#x4E86;&#xFF0C;&#x65B0;&#x7684;&#x8F6C;&#x6362;&#x5E94;&#x8BE5;&#x518D;&#x6B21;&#x4ECE;0&#x5F00;&#x59CB;&#x7D2F;&#x52A0;&#xFF0C;&#x800C;<code class="literal">sum</code>&#x73B0;&#x5728;&#x5DF2;&#x7ECF;&#x662F;123&#x4E86;&#xFF0C;&#x539F;&#x56E0;&#x5728;&#x4E8E;&#x65B0;&#x7684;&#x5FAA;&#x73AF;&#x6CA1;&#x6709;&#x628A;<code class="literal">sum</code>&#x5F52;&#x96F6;&#x3002;&#x53EF;&#x89C1;&#x65AD;&#x70B9;&#x6709;&#x52A9;&#x4E8E;&#x5FEB;&#x901F;&#x8DF3;&#x8FC7;&#x6CA1;&#x6709;&#x95EE;&#x9898;&#x7684;&#x4EE3;&#x7801;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x6709;&#x95EE;&#x9898;&#x7684;&#x4EE3;&#x7801;&#x4E0A;&#x6162;&#x6162;&#x8D70;&#x6162;&#x6162;&#x5206;&#x6790;&#xFF0C;&#x201C;<span class="quote">&#x65AD;&#x70B9;&#x52A0;&#x5355;&#x6B65;</span>&#x201D;&#x662F;&#x4F7F;&#x7528;&#x8C03;&#x8BD5;&#x5668;&#x7684;&#x57FA;&#x672C;&#x65B9;&#x6CD5;&#x3002;&#x81F3;&#x4E8E;&#x5E94;&#x8BE5;&#x5728;&#x54EA;&#x91CC;&#x8BBE;&#x7F6E;&#x65AD;&#x70B9;&#xFF0C;&#x600E;&#x4E48;&#x77E5;&#x9053;&#x54EA;&#x4E9B;&#x4EE3;&#x7801;&#x53EF;&#x4EE5;&#x8DF3;&#x8FC7;&#x800C;&#x54EA;&#x4E9B;&#x4EE3;&#x7801;&#x8981;&#x6162;&#x6162;&#x8D70;&#xFF0C;&#x4E5F;&#x8981;&#x901A;&#x8FC7;&#x5BF9;&#x9519;&#x8BEF;&#x73B0;&#x8C61;&#x7684;&#x5206;&#x6790;&#x548C;&#x5047;&#x8BBE;&#x6765;&#x786E;&#x5B9A;&#xFF0C;&#x4EE5;&#x524D;&#x6211;&#x4EEC;&#x7528;<code class="literal">printf</code>&#x6253;&#x5370;&#x4E2D;&#x95F4;&#x7ED3;&#x679C;&#x65F6;&#x4E5F;&#x8981;&#x5206;&#x6790;&#x5E94;&#x8BE5;&#x5728;&#x54EA;&#x91CC;&#x63D2;&#x5165;<code class="literal">printf</code>&#xFF0C;&#x6253;&#x5370;&#x54EA;&#x4E9B;&#x4E2D;&#x95F4;&#x7ED3;&#x679C;&#xFF0C;&#x8C03;&#x8BD5;&#x7684;&#x57FA;&#x672C;&#x601D;&#x8DEF;&#x662F;&#x4E00;&#x6837;&#x7684;&#x3002;&#x4E00;&#x6B21;&#x8C03;&#x8BD5;&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x591A;&#x4E2A;&#x65AD;&#x70B9;&#xFF0C;&#x7528;<code class="literal">info</code>&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x5DF2;&#x7ECF;&#x8BBE;&#x7F6E;&#x7684;&#x65AD;&#x70B9;&#xFF1A;</p><pre class="screen">(gdb) b 12
 Breakpoint 3 at 0x8048411: file main.c, line 12.
 (gdb) i breakpoints
 Num     Type           Disp Enb Address    What
 2       breakpoint     keep y   0x080483c3 in main at main.c:9
 	breakpoint already hit 1 time
-3       breakpoint     keep y   0x08048411 in main at main.c:12</pre><p>每个断点都有一个编号，可以用编号指定删除某个断点： </p><pre class="screen">(gdb) delete breakpoints 2
+3       breakpoint     keep y   0x08048411 in main at main.c:12</pre><p>&#x6BCF;&#x4E2A;&#x65AD;&#x70B9;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x7F16;&#x53F7;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x7F16;&#x53F7;&#x6307;&#x5B9A;&#x5220;&#x9664;&#x67D0;&#x4E2A;&#x65AD;&#x70B9;&#xFF1A; </p><pre class="screen">(gdb) delete breakpoints 2
 (gdb) i breakpoints 
 Num     Type           Disp Enb Address    What
-3       breakpoint     keep y   0x08048411 in main at main.c:12</pre><p>有时候一个断点暂时不用可以禁用掉而不必删除，这样以后想用的时候可以直接启用，而不必重新从代码里找应该在哪一行设断点：</p><pre class="screen">(gdb) disable breakpoints 3
+3       breakpoint     keep y   0x08048411 in main at main.c:12</pre><p>&#x6709;&#x65F6;&#x5019;&#x4E00;&#x4E2A;&#x65AD;&#x70B9;&#x6682;&#x65F6;&#x4E0D;&#x7528;&#x53EF;&#x4EE5;&#x7981;&#x7528;&#x6389;&#x800C;&#x4E0D;&#x5FC5;&#x5220;&#x9664;&#xFF0C;&#x8FD9;&#x6837;&#x4EE5;&#x540E;&#x60F3;&#x7528;&#x7684;&#x65F6;&#x5019;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x542F;&#x7528;&#xFF0C;&#x800C;&#x4E0D;&#x5FC5;&#x91CD;&#x65B0;&#x4ECE;&#x4EE3;&#x7801;&#x91CC;&#x627E;&#x5E94;&#x8BE5;&#x5728;&#x54EA;&#x4E00;&#x884C;&#x8BBE;&#x65AD;&#x70B9;&#xFF1A;</p><pre class="screen">(gdb) disable breakpoints 3
 (gdb) i breakpoints 
 Num     Type           Disp Enb Address    What
 3       breakpoint     keep n   0x08048411 in main at main.c:12
@@ -76,7 +74,7 @@ Num     Type           Disp Enb Address    What
 (gdb) delete breakpoints 
 Delete all breakpoints? (y or n) y
 (gdb) i breakpoints
-No breakpoints or watchpoints.</pre><p><code class="literal">gdb</code>的断点功能非常灵活，还可以设置断点在满足某个条件时才激活，例如我们仍然在循环开头设置断点，但是仅当<code class="literal">sum</code>不等于0时才中断，然后用<code class="literal">run</code>命令（简写为<code class="literal">r</code>）重新从程序开头连续运行：</p><pre class="screen">(gdb) break 9 if sum != 0
+No breakpoints or watchpoints.</pre><p><code class="literal">gdb</code>&#x7684;&#x65AD;&#x70B9;&#x529F;&#x80FD;&#x975E;&#x5E38;&#x7075;&#x6D3B;&#xFF0C;&#x8FD8;&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x65AD;&#x70B9;&#x5728;&#x6EE1;&#x8DB3;&#x67D0;&#x4E2A;&#x6761;&#x4EF6;&#x65F6;&#x624D;&#x6FC0;&#x6D3B;&#xFF0C;&#x4F8B;&#x5982;&#x6211;&#x4EEC;&#x4ECD;&#x7136;&#x5728;&#x5FAA;&#x73AF;&#x5F00;&#x5934;&#x8BBE;&#x7F6E;&#x65AD;&#x70B9;&#xFF0C;&#x4F46;&#x662F;&#x4EC5;&#x5F53;<code class="literal">sum</code>&#x4E0D;&#x7B49;&#x4E8E;0&#x65F6;&#x624D;&#x4E2D;&#x65AD;&#xFF0C;&#x7136;&#x540E;&#x7528;<code class="literal">run</code>&#x547D;&#x4EE4;&#xFF08;&#x7B80;&#x5199;&#x4E3A;<code class="literal">r</code>&#xFF09;&#x91CD;&#x65B0;&#x4ECE;&#x7A0B;&#x5E8F;&#x5F00;&#x5934;&#x8FDE;&#x7EED;&#x8FD0;&#x884C;&#xFF1A;</p><pre class="screen">(gdb) break 9 if sum != 0
 Breakpoint 5 at 0x80483c3: file main.c, line 9.
 (gdb) i breakpoints 
 Num     Type           Disp Enb Address    What
@@ -90,21 +88,22 @@ Starting program: /home/akaedu/main
 input=123
 
 Breakpoint 5, main () at main.c:9
-9			scanf("%s", input);
-1: sum = 123</pre><p>结果是第一次执行<code class="literal">scanf</code>之前没有中断，第二次却中断了。总结一下本节用到的<code class="literal">gdb</code>命令：</p><div class="table"><a id="id2741647"></a><p class="title"><b>表 10.2. gdb基本命令2</b></p><div class="table-contents"><table summary="gdb基本命令2" border="1"><colgroup><col /><col /></colgroup><thead><tr><th>命令</th><th>描述</th></tr></thead><tbody><tr><td>break（或b） 行号</td><td>在某一行设置断点</td></tr><tr><td>break 函数名</td><td>在某个函数开头设置断点</td></tr><tr><td>break ... if ...</td><td>设置条件断点</td></tr><tr><td>continue（或c）</td><td>从当前位置开始连续运行程序</td></tr><tr><td>delete breakpoints 断点号</td><td>删除断点</td></tr><tr><td>display 变量名</td><td>跟踪查看某个变量，每次停下来都显示它的值</td></tr><tr><td>disable breakpoints 断点号</td><td>禁用断点</td></tr><tr><td>enable 断点号</td><td>启用断点</td></tr><tr><td>info（或i） breakpoints</td><td>查看当前设置了哪些断点</td></tr><tr><td>run（或r）</td><td>从头开始连续运行程序</td></tr><tr><td>undisplay 跟踪显示号</td><td>取消跟踪显示</td></tr></tbody></table></div></div><br class="table-break" /><div class="simplesect" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2741755"></a>习题</h3></div></div></div><p>1、看下面的程序：</p><pre class="programlisting">#include &lt;stdio.h&gt;
+9			scanf(&quot;%s&quot;, input);
+1: sum = 123</pre><p>&#x7ED3;&#x679C;&#x662F;&#x7B2C;&#x4E00;&#x6B21;&#x6267;&#x884C;<code class="literal">scanf</code>&#x4E4B;&#x524D;&#x6CA1;&#x6709;&#x4E2D;&#x65AD;&#xFF0C;&#x7B2C;&#x4E8C;&#x6B21;&#x5374;&#x4E2D;&#x65AD;&#x4E86;&#x3002;&#x603B;&#x7ED3;&#x4E00;&#x4E0B;&#x672C;&#x8282;&#x7528;&#x5230;&#x7684;<code class="literal">gdb</code>&#x547D;&#x4EE4;&#xFF1A;</p><div class="table"><a id="id2741647"></a><p class="title"><b>&#x8868;&#xA0;10.2.&#xA0;gdb&#x57FA;&#x672C;&#x547D;&#x4EE4;2</b></p><div class="table-contents"><table summary="gdb&#x57FA;&#x672C;&#x547D;&#x4EE4;2" border="1"><colgroup><col><col></colgroup><thead><tr><th>&#x547D;&#x4EE4;</th><th>&#x63CF;&#x8FF0;</th></tr></thead><tbody><tr><td>break&#xFF08;&#x6216;b&#xFF09; &#x884C;&#x53F7;</td><td>&#x5728;&#x67D0;&#x4E00;&#x884C;&#x8BBE;&#x7F6E;&#x65AD;&#x70B9;</td></tr><tr><td>break &#x51FD;&#x6570;&#x540D;</td><td>&#x5728;&#x67D0;&#x4E2A;&#x51FD;&#x6570;&#x5F00;&#x5934;&#x8BBE;&#x7F6E;&#x65AD;&#x70B9;</td></tr><tr><td>break ... if ...</td><td>&#x8BBE;&#x7F6E;&#x6761;&#x4EF6;&#x65AD;&#x70B9;</td></tr><tr><td>continue&#xFF08;&#x6216;c&#xFF09;</td><td>&#x4ECE;&#x5F53;&#x524D;&#x4F4D;&#x7F6E;&#x5F00;&#x59CB;&#x8FDE;&#x7EED;&#x8FD0;&#x884C;&#x7A0B;&#x5E8F;</td></tr><tr><td>delete breakpoints &#x65AD;&#x70B9;&#x53F7;</td><td>&#x5220;&#x9664;&#x65AD;&#x70B9;</td></tr><tr><td>display &#x53D8;&#x91CF;&#x540D;</td><td>&#x8DDF;&#x8E2A;&#x67E5;&#x770B;&#x67D0;&#x4E2A;&#x53D8;&#x91CF;&#xFF0C;&#x6BCF;&#x6B21;&#x505C;&#x4E0B;&#x6765;&#x90FD;&#x663E;&#x793A;&#x5B83;&#x7684;&#x503C;</td></tr><tr><td>disable breakpoints &#x65AD;&#x70B9;&#x53F7;</td><td>&#x7981;&#x7528;&#x65AD;&#x70B9;</td></tr><tr><td>enable &#x65AD;&#x70B9;&#x53F7;</td><td>&#x542F;&#x7528;&#x65AD;&#x70B9;</td></tr><tr><td>info&#xFF08;&#x6216;i&#xFF09; breakpoints</td><td>&#x67E5;&#x770B;&#x5F53;&#x524D;&#x8BBE;&#x7F6E;&#x4E86;&#x54EA;&#x4E9B;&#x65AD;&#x70B9;</td></tr><tr><td>run&#xFF08;&#x6216;r&#xFF09;</td><td>&#x4ECE;&#x5934;&#x5F00;&#x59CB;&#x8FDE;&#x7EED;&#x8FD0;&#x884C;&#x7A0B;&#x5E8F;</td></tr><tr><td>undisplay &#x8DDF;&#x8E2A;&#x663E;&#x793A;&#x53F7;</td><td>&#x53D6;&#x6D88;&#x8DDF;&#x8E2A;&#x663E;&#x793A;</td></tr></tbody></table></div></div><br class="table-break"><div class="simplesect" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h3 class="title"><a id="id2741755"></a>&#x4E60;&#x9898;</h3></div></div></div><p>1&#x3001;&#x770B;&#x4E0B;&#x9762;&#x7684;&#x7A0B;&#x5E8F;&#xFF1A;</p><pre class="programlisting">#include &lt;stdio.h&gt;
 
 int main(void)
 {
 	int i;
-	char str[6] = "hello";
-	char reverse_str[6] = "";
+	char str[6] = &quot;hello&quot;;
+	char reverse_str[6] = &quot;&quot;;
 
-	printf("%s\n", str);
+	printf(&quot;%s\n&quot;, str);
 	for (i = 0; i &lt; 5; i++)
 		reverse_str[5-i] = str[i];
-	printf("%s\n", reverse_str);
+	printf(&quot;%s\n&quot;, reverse_str);
 	return 0;
-}</pre><p>首先用字符串<code class="literal">"hello"</code>初始化一个字符数组<code class="literal">str</code>（算上<code class="literal">'\0'</code>共6个字符）。然后用空字符串<code class="literal">""</code>初始化一个同样长的字符数组<code class="literal">reverse_str</code>，相当于所有元素用<code class="literal">'\0'</code>初始化。然后打印<code class="literal">str</code>，把<code class="literal">str</code>倒序存入<code class="literal">reverse_str</code>，再打印<code class="literal">reverse_str</code>。然而结果并不正确：</p><pre class="screen">$ ./main 
+}</pre><p>&#x9996;&#x5148;&#x7528;&#x5B57;&#x7B26;&#x4E32;<code class="literal">&quot;hello&quot;</code>&#x521D;&#x59CB;&#x5316;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x6570;&#x7EC4;<code class="literal">str</code>&#xFF08;&#x7B97;&#x4E0A;<code class="literal">&apos;\0&apos;</code>&#x5171;6&#x4E2A;&#x5B57;&#x7B26;&#xFF09;&#x3002;&#x7136;&#x540E;&#x7528;&#x7A7A;&#x5B57;&#x7B26;&#x4E32;<code class="literal">&quot;&quot;</code>&#x521D;&#x59CB;&#x5316;&#x4E00;&#x4E2A;&#x540C;&#x6837;&#x957F;&#x7684;&#x5B57;&#x7B26;&#x6570;&#x7EC4;<code class="literal">reverse_str</code>&#xFF0C;&#x76F8;&#x5F53;&#x4E8E;&#x6240;&#x6709;&#x5143;&#x7D20;&#x7528;<code class="literal">&apos;\0&apos;</code>&#x521D;&#x59CB;&#x5316;&#x3002;&#x7136;&#x540E;&#x6253;&#x5370;<code class="literal">str</code>&#xFF0C;&#x628A;<code class="literal">str</code>&#x5012;&#x5E8F;&#x5B58;&#x5165;<code class="literal">reverse_str</code>&#xFF0C;&#x518D;&#x6253;&#x5370;<code class="literal">reverse_str</code>&#x3002;&#x7136;&#x800C;&#x7ED3;&#x679C;&#x5E76;&#x4E0D;&#x6B63;&#x786E;&#xFF1A;</p><pre class="screen">$ ./main 
 hello
 
-</pre><p>我们本来希望<code class="literal">reverse_str</code>打印出来是<code class="literal">olleh</code>，结果什么都没有。重点怀疑对象肯定是循环，那么简单验算一下，<code class="literal">i=0</code>时，<code class="literal">reverse_str[5]=str[0]</code>，也就是<code class="literal">'h'</code>，<code class="literal">i=1</code>时，<code class="literal">reverse_str[4]=str[1]</code>，也就是<code class="literal">'e'</code>，依此类推，i=0,1,2,3,4，共5次循环，正好把h,e,l,l,o五个字母给倒过来了，哪里不对了？用<code class="literal">gdb</code>跟踪循环，找出错误原因并改正。</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch10s01.html">上一页</a> </td><td width="20%" align="center"><a accesskey="u" href="ch10.html">上一级</a></td><td width="40%" align="right"> <a accesskey="n" href="ch10s03.html">下一页</a></td></tr><tr><td width="40%" align="left" valign="top">1. 单步执行和跟踪函数调用 </td><td width="20%" align="center"><a accesskey="h" href="index.html">起始页</a></td><td width="40%" align="right" valign="top"> 3. 观察点</td></tr></table></div></body></html>
+</pre><p>&#x6211;&#x4EEC;&#x672C;&#x6765;&#x5E0C;&#x671B;<code class="literal">reverse_str</code>&#x6253;&#x5370;&#x51FA;&#x6765;&#x662F;<code class="literal">olleh</code>&#xFF0C;&#x7ED3;&#x679C;&#x4EC0;&#x4E48;&#x90FD;&#x6CA1;&#x6709;&#x3002;&#x91CD;&#x70B9;&#x6000;&#x7591;&#x5BF9;&#x8C61;&#x80AF;&#x5B9A;&#x662F;&#x5FAA;&#x73AF;&#xFF0C;&#x90A3;&#x4E48;&#x7B80;&#x5355;&#x9A8C;&#x7B97;&#x4E00;&#x4E0B;&#xFF0C;<code class="literal">i=0</code>&#x65F6;&#xFF0C;<code class="literal">reverse_str[5]=str[0]</code>&#xFF0C;&#x4E5F;&#x5C31;&#x662F;<code class="literal">&apos;h&apos;</code>&#xFF0C;<code class="literal">i=1</code>&#x65F6;&#xFF0C;<code class="literal">reverse_str[4]=str[1]</code>&#xFF0C;&#x4E5F;&#x5C31;&#x662F;<code class="literal">&apos;e&apos;</code>&#xFF0C;&#x4F9D;&#x6B64;&#x7C7B;&#x63A8;&#xFF0C;i=0,1,2,3,4&#xFF0C;&#x5171;5&#x6B21;&#x5FAA;&#x73AF;&#xFF0C;&#x6B63;&#x597D;&#x628A;h,e,l,l,o&#x4E94;&#x4E2A;&#x5B57;&#x6BCD;&#x7ED9;&#x5012;&#x8FC7;&#x6765;&#x4E86;&#xFF0C;&#x54EA;&#x91CC;&#x4E0D;&#x5BF9;&#x4E86;&#xFF1F;&#x7528;<code class="literal">gdb</code>&#x8DDF;&#x8E2A;&#x5FAA;&#x73AF;&#xFF0C;&#x627E;&#x51FA;&#x9519;&#x8BEF;&#x539F;&#x56E0;&#x5E76;&#x6539;&#x6B63;&#x3002;</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="ch10s01.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><td width="20%" align="center"><a accesskey="u" href="ch10.html">&#x4E0A;&#x4E00;&#x7EA7;</a></td><td width="40%" align="right">&#xA0;<a accesskey="n" href="ch10s03.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr><tr><td width="40%" align="left" valign="top">1.&#xA0;&#x5355;&#x6B65;&#x6267;&#x884C;&#x548C;&#x8DDF;&#x8E2A;&#x51FD;&#x6570;&#x8C03;&#x7528;&#xA0;</td><td width="20%" align="center"><a accesskey="h" href="index.html">&#x8D77;&#x59CB;&#x9875;</a></td><td width="40%" align="right" valign="top">&#xA0;3.&#xA0;&#x89C2;&#x5BDF;&#x70B9;</td></tr></tbody></table></div>
+</body></html>

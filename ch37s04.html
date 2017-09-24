@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4. UNIX Domain Socket IPC</title><link rel="stylesheet" href="styles.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.73.2" /><link rel="start" href="index.html" title="Linux C编程一站式学习" /><link rel="up" href="ch37.html" title="第 37 章 socket编程" /><link rel="prev" href="ch37s03.html" title="3. 基于UDP协议的网络程序" /><link rel="next" href="ch37s05.html" title="5. 练习：实现简单的Web服务器" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">4. UNIX Domain Socket IPC</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch37s03.html">上一页</a> </td><th width="60%" align="center">第 37 章 socket编程</th><td width="20%" align="right"> <a accesskey="n" href="ch37s05.html">下一页</a></td></tr></table><hr /></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2904243"></a>4. UNIX Domain Socket IPC</h2></div></div></div><p>socket API原本是为网络通讯设计的，但后来在socket的框架上发展出一种IPC机制，就是UNIX Domain Socket。虽然网络socket也可用于同一台主机的进程间通讯（通过loopback地址127.0.0.1），但是UNIX Domain Socket用于IPC更有效率：不需要经过网络协议栈，不需要打包拆包、计算校验和、维护序号和应答等，只是将应用层数据从一个进程拷贝到另一个进程。这是因为，IPC机制本质上是可靠的通讯，而网络协议是为不可靠的通讯设计的。UNIX Domain Socket也提供面向流和面向数据包两种API接口，类似于TCP和UDP，但是面向消息的UNIX Domain Socket也是可靠的，消息既不会丢失也不会顺序错乱。</p><p>UNIX Domain Socket是全双工的，API接口语义丰富，相比其它IPC机制有明显的优越性，目前已成为使用最广泛的IPC机制，比如X Window服务器和GUI程序之间就是通过UNIX Domain Socket通讯的。</p><p>使用UNIX Domain Socket的过程和网络socket十分相似，也要先调用socket()创建一个socket文件描述符，address family指定为AF_UNIX，type可以选择SOCK_DGRAM或SOCK_STREAM，protocol参数仍然指定为0即可。</p><p>UNIX Domain Socket与网络socket编程最明显的不同在于地址格式不同，用结构体sockaddr_un表示，网络编程的socket地址是IP地址加端口号，而UNIX Domain Socket的地址是一个socket类型的文件在文件系统中的路径，这个socket文件由bind()调用创建，如果调用bind()时该文件已存在，则bind()错误返回。</p><p>以下程序将UNIX Domain socket绑定到一个地址。</p><pre class="programlisting">#include &lt;stdlib.h&gt;
+<!--?xml version="1.0" encoding="UTF-8" standalone="no"?--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>4.&#xA0;UNIX Domain Socket IPC</title><link rel="stylesheet" href="styles.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="Linux C&#x7F16;&#x7A0B;&#x4E00;&#x7AD9;&#x5F0F;&#x5B66;&#x4E60;"><link rel="up" href="ch37.html" title="&#x7B2C;&#xA0;37&#xA0;&#x7AE0;&#xA0;socket&#x7F16;&#x7A0B;"><link rel="prev" href="ch37s03.html" title="3.&#xA0;&#x57FA;&#x4E8E;UDP&#x534F;&#x8BAE;&#x7684;&#x7F51;&#x7EDC;&#x7A0B;&#x5E8F;"><link rel="next" href="ch37s05.html" title="5.&#xA0;&#x7EC3;&#x4E60;&#xFF1A;&#x5B9E;&#x73B0;&#x7B80;&#x5355;&#x7684;Web&#x670D;&#x52A1;&#x5668;"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">4.&#xA0;UNIX Domain Socket IPC</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch37s03.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><th width="60%" align="center">&#x7B2C;&#xA0;37&#xA0;&#x7AE0;&#xA0;socket&#x7F16;&#x7A0B;</th><td width="20%" align="right">&#xA0;<a accesskey="n" href="ch37s05.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr></tbody></table><hr></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2904243"></a>4.&#xA0;UNIX Domain Socket IPC</h2></div></div></div><p>socket API&#x539F;&#x672C;&#x662F;&#x4E3A;&#x7F51;&#x7EDC;&#x901A;&#x8BAF;&#x8BBE;&#x8BA1;&#x7684;&#xFF0C;&#x4F46;&#x540E;&#x6765;&#x5728;socket&#x7684;&#x6846;&#x67B6;&#x4E0A;&#x53D1;&#x5C55;&#x51FA;&#x4E00;&#x79CD;IPC&#x673A;&#x5236;&#xFF0C;&#x5C31;&#x662F;UNIX Domain Socket&#x3002;&#x867D;&#x7136;&#x7F51;&#x7EDC;socket&#x4E5F;&#x53EF;&#x7528;&#x4E8E;&#x540C;&#x4E00;&#x53F0;&#x4E3B;&#x673A;&#x7684;&#x8FDB;&#x7A0B;&#x95F4;&#x901A;&#x8BAF;&#xFF08;&#x901A;&#x8FC7;loopback&#x5730;&#x5740;127.0.0.1&#xFF09;&#xFF0C;&#x4F46;&#x662F;UNIX Domain Socket&#x7528;&#x4E8E;IPC&#x66F4;&#x6709;&#x6548;&#x7387;&#xFF1A;&#x4E0D;&#x9700;&#x8981;&#x7ECF;&#x8FC7;&#x7F51;&#x7EDC;&#x534F;&#x8BAE;&#x6808;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x6253;&#x5305;&#x62C6;&#x5305;&#x3001;&#x8BA1;&#x7B97;&#x6821;&#x9A8C;&#x548C;&#x3001;&#x7EF4;&#x62A4;&#x5E8F;&#x53F7;&#x548C;&#x5E94;&#x7B54;&#x7B49;&#xFF0C;&#x53EA;&#x662F;&#x5C06;&#x5E94;&#x7528;&#x5C42;&#x6570;&#x636E;&#x4ECE;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x62F7;&#x8D1D;&#x5230;&#x53E6;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x3002;&#x8FD9;&#x662F;&#x56E0;&#x4E3A;&#xFF0C;IPC&#x673A;&#x5236;&#x672C;&#x8D28;&#x4E0A;&#x662F;&#x53EF;&#x9760;&#x7684;&#x901A;&#x8BAF;&#xFF0C;&#x800C;&#x7F51;&#x7EDC;&#x534F;&#x8BAE;&#x662F;&#x4E3A;&#x4E0D;&#x53EF;&#x9760;&#x7684;&#x901A;&#x8BAF;&#x8BBE;&#x8BA1;&#x7684;&#x3002;UNIX Domain Socket&#x4E5F;&#x63D0;&#x4F9B;&#x9762;&#x5411;&#x6D41;&#x548C;&#x9762;&#x5411;&#x6570;&#x636E;&#x5305;&#x4E24;&#x79CD;API&#x63A5;&#x53E3;&#xFF0C;&#x7C7B;&#x4F3C;&#x4E8E;TCP&#x548C;UDP&#xFF0C;&#x4F46;&#x662F;&#x9762;&#x5411;&#x6D88;&#x606F;&#x7684;UNIX Domain Socket&#x4E5F;&#x662F;&#x53EF;&#x9760;&#x7684;&#xFF0C;&#x6D88;&#x606F;&#x65E2;&#x4E0D;&#x4F1A;&#x4E22;&#x5931;&#x4E5F;&#x4E0D;&#x4F1A;&#x987A;&#x5E8F;&#x9519;&#x4E71;&#x3002;</p><p>UNIX Domain Socket&#x662F;&#x5168;&#x53CC;&#x5DE5;&#x7684;&#xFF0C;API&#x63A5;&#x53E3;&#x8BED;&#x4E49;&#x4E30;&#x5BCC;&#xFF0C;&#x76F8;&#x6BD4;&#x5176;&#x5B83;IPC&#x673A;&#x5236;&#x6709;&#x660E;&#x663E;&#x7684;&#x4F18;&#x8D8A;&#x6027;&#xFF0C;&#x76EE;&#x524D;&#x5DF2;&#x6210;&#x4E3A;&#x4F7F;&#x7528;&#x6700;&#x5E7F;&#x6CDB;&#x7684;IPC&#x673A;&#x5236;&#xFF0C;&#x6BD4;&#x5982;X Window&#x670D;&#x52A1;&#x5668;&#x548C;GUI&#x7A0B;&#x5E8F;&#x4E4B;&#x95F4;&#x5C31;&#x662F;&#x901A;&#x8FC7;UNIX Domain Socket&#x901A;&#x8BAF;&#x7684;&#x3002;</p><p>&#x4F7F;&#x7528;UNIX Domain Socket&#x7684;&#x8FC7;&#x7A0B;&#x548C;&#x7F51;&#x7EDC;socket&#x5341;&#x5206;&#x76F8;&#x4F3C;&#xFF0C;&#x4E5F;&#x8981;&#x5148;&#x8C03;&#x7528;socket()&#x521B;&#x5EFA;&#x4E00;&#x4E2A;socket&#x6587;&#x4EF6;&#x63CF;&#x8FF0;&#x7B26;&#xFF0C;address family&#x6307;&#x5B9A;&#x4E3A;AF_UNIX&#xFF0C;type&#x53EF;&#x4EE5;&#x9009;&#x62E9;SOCK_DGRAM&#x6216;SOCK_STREAM&#xFF0C;protocol&#x53C2;&#x6570;&#x4ECD;&#x7136;&#x6307;&#x5B9A;&#x4E3A;0&#x5373;&#x53EF;&#x3002;</p><p>UNIX Domain Socket&#x4E0E;&#x7F51;&#x7EDC;socket&#x7F16;&#x7A0B;&#x6700;&#x660E;&#x663E;&#x7684;&#x4E0D;&#x540C;&#x5728;&#x4E8E;&#x5730;&#x5740;&#x683C;&#x5F0F;&#x4E0D;&#x540C;&#xFF0C;&#x7528;&#x7ED3;&#x6784;&#x4F53;sockaddr_un&#x8868;&#x793A;&#xFF0C;&#x7F51;&#x7EDC;&#x7F16;&#x7A0B;&#x7684;socket&#x5730;&#x5740;&#x662F;IP&#x5730;&#x5740;&#x52A0;&#x7AEF;&#x53E3;&#x53F7;&#xFF0C;&#x800C;UNIX Domain Socket&#x7684;&#x5730;&#x5740;&#x662F;&#x4E00;&#x4E2A;socket&#x7C7B;&#x578B;&#x7684;&#x6587;&#x4EF6;&#x5728;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x4E2D;&#x7684;&#x8DEF;&#x5F84;&#xFF0C;&#x8FD9;&#x4E2A;socket&#x6587;&#x4EF6;&#x7531;bind()&#x8C03;&#x7528;&#x521B;&#x5EFA;&#xFF0C;&#x5982;&#x679C;&#x8C03;&#x7528;bind()&#x65F6;&#x8BE5;&#x6587;&#x4EF6;&#x5DF2;&#x5B58;&#x5728;&#xFF0C;&#x5219;bind()&#x9519;&#x8BEF;&#x8FD4;&#x56DE;&#x3002;</p><p>&#x4EE5;&#x4E0B;&#x7A0B;&#x5E8F;&#x5C06;UNIX Domain socket&#x7ED1;&#x5B9A;&#x5230;&#x4E00;&#x4E2A;&#x5730;&#x5740;&#x3002;</p><pre class="programlisting">#include &lt;stdlib.h&gt;
 #include &lt;stdio.h&gt;
 #include &lt;stddef.h&gt;
 #include &lt;sys/socket.h&gt;
@@ -13,19 +11,19 @@ int main(void)
 
 	memset(&amp;un, 0, sizeof(un));
 	un.sun_family = AF_UNIX;
-	strcpy(un.sun_path, "foo.socket");
+	strcpy(un.sun_path, &quot;foo.socket&quot;);
 	if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) &lt; 0) {
-		perror("socket error");
+		perror(&quot;socket error&quot;);
 		exit(1);
 	}
 	size = offsetof(struct sockaddr_un, sun_path) + strlen(un.sun_path);
 	if (bind(fd, (struct sockaddr *)&amp;un, size) &lt; 0) {
-		perror("bind error");
+		perror(&quot;bind error&quot;);
 		exit(1);
 	}
-	printf("UNIX domain socket bound\n");
+	printf(&quot;UNIX domain socket bound\n&quot;);
 	exit(0);
-}</pre><p>注意程序中的offsetof宏，它在stddef.h头文件中定义：</p><pre class="programlisting">#define offsetof(TYPE, MEMBER) ((int)&amp;((TYPE *)0)-&gt;MEMBER)</pre><p>offsetof(struct sockaddr_un, sun_path)就是取sockaddr_un结构体的sun_path成员在结构体中的偏移，也就是从结构体的第几个字节开始是sun_path成员。想一想，这个宏是如何实现这一功能的？</p><p>该程序的运行结果如下。</p><pre class="screen">$ ./a.out
+}</pre><p>&#x6CE8;&#x610F;&#x7A0B;&#x5E8F;&#x4E2D;&#x7684;offsetof&#x5B8F;&#xFF0C;&#x5B83;&#x5728;stddef.h&#x5934;&#x6587;&#x4EF6;&#x4E2D;&#x5B9A;&#x4E49;&#xFF1A;</p><pre class="programlisting">#define offsetof(TYPE, MEMBER) ((int)&amp;((TYPE *)0)-&gt;MEMBER)</pre><p>offsetof(struct sockaddr_un, sun_path)&#x5C31;&#x662F;&#x53D6;sockaddr_un&#x7ED3;&#x6784;&#x4F53;&#x7684;sun_path&#x6210;&#x5458;&#x5728;&#x7ED3;&#x6784;&#x4F53;&#x4E2D;&#x7684;&#x504F;&#x79FB;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x4ECE;&#x7ED3;&#x6784;&#x4F53;&#x7684;&#x7B2C;&#x51E0;&#x4E2A;&#x5B57;&#x8282;&#x5F00;&#x59CB;&#x662F;sun_path&#x6210;&#x5458;&#x3002;&#x60F3;&#x4E00;&#x60F3;&#xFF0C;&#x8FD9;&#x4E2A;&#x5B8F;&#x662F;&#x5982;&#x4F55;&#x5B9E;&#x73B0;&#x8FD9;&#x4E00;&#x529F;&#x80FD;&#x7684;&#xFF1F;</p><p>&#x8BE5;&#x7A0B;&#x5E8F;&#x7684;&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x5982;&#x4E0B;&#x3002;</p><pre class="screen">$ ./a.out
 UNIX domain socket bound
 $ ls -l foo.socket
 srwxrwxr-x 1 user        0 Aug 22 12:43 foo.socket
@@ -33,7 +31,7 @@ $ ./a.out
 bind error: Address already in use
 $ rm foo.socket
 $ ./a.out
-UNIX domain socket bound</pre><p>以下是服务器的listen模块，与网络socket编程类似，在bind之后要listen，表示通过bind的地址（也就是socket文件）提供服务。</p><pre class="programlisting">#include &lt;stddef.h&gt;
+UNIX domain socket bound</pre><p>&#x4EE5;&#x4E0B;&#x662F;&#x670D;&#x52A1;&#x5668;&#x7684;listen&#x6A21;&#x5757;&#xFF0C;&#x4E0E;&#x7F51;&#x7EDC;socket&#x7F16;&#x7A0B;&#x7C7B;&#x4F3C;&#xFF0C;&#x5728;bind&#x4E4B;&#x540E;&#x8981;listen&#xFF0C;&#x8868;&#x793A;&#x901A;&#x8FC7;bind&#x7684;&#x5730;&#x5740;&#xFF08;&#x4E5F;&#x5C31;&#x662F;socket&#x6587;&#x4EF6;&#xFF09;&#x63D0;&#x4F9B;&#x670D;&#x52A1;&#x3002;</p><pre class="programlisting">#include &lt;stddef.h&gt;
 #include &lt;sys/socket.h&gt;
 #include &lt;sys/un.h&gt;
 #include &lt;errno.h&gt;
@@ -65,7 +63,7 @@ int serv_listen(const char *name)
 		rval = -2;
 		goto errout;
 	}
-	if (listen(fd, QLEN) &lt; 0) { /* tell kernel we're a server */
+	if (listen(fd, QLEN) &lt; 0) { /* tell kernel we&apos;re a server */
 		rval = -3;
 		goto errout;
 	}
@@ -76,7 +74,7 @@ errout:
 	close(fd);
 	errno = err;
 	return(rval);
-}</pre><p>以下是服务器的accept模块，通过accept得到客户端地址也应该是一个socket文件，如果不是socket文件就返回错误码，如果是socket文件，在建立连接后这个文件就没有用了，调用unlink把它删掉，通过传出参数uidptr返回客户端程序的user id。</p><pre class="programlisting">#include &lt;stddef.h&gt;
+}</pre><p>&#x4EE5;&#x4E0B;&#x662F;&#x670D;&#x52A1;&#x5668;&#x7684;accept&#x6A21;&#x5757;&#xFF0C;&#x901A;&#x8FC7;accept&#x5F97;&#x5230;&#x5BA2;&#x6237;&#x7AEF;&#x5730;&#x5740;&#x4E5F;&#x5E94;&#x8BE5;&#x662F;&#x4E00;&#x4E2A;socket&#x6587;&#x4EF6;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x662F;socket&#x6587;&#x4EF6;&#x5C31;&#x8FD4;&#x56DE;&#x9519;&#x8BEF;&#x7801;&#xFF0C;&#x5982;&#x679C;&#x662F;socket&#x6587;&#x4EF6;&#xFF0C;&#x5728;&#x5EFA;&#x7ACB;&#x8FDE;&#x63A5;&#x540E;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x5C31;&#x6CA1;&#x6709;&#x7528;&#x4E86;&#xFF0C;&#x8C03;&#x7528;unlink&#x628A;&#x5B83;&#x5220;&#x6389;&#xFF0C;&#x901A;&#x8FC7;&#x4F20;&#x51FA;&#x53C2;&#x6570;uidptr&#x8FD4;&#x56DE;&#x5BA2;&#x6237;&#x7AEF;&#x7A0B;&#x5E8F;&#x7684;user id&#x3002;</p><pre class="programlisting">#include &lt;stddef.h&gt;
 #include &lt;sys/stat.h&gt;
 #include &lt;sys/socket.h&gt;
 #include &lt;sys/un.h&gt;
@@ -93,7 +91,7 @@ int serv_accept(int listenfd, uid_t *uidptr)
 	if ((clifd = accept(listenfd, (struct sockaddr *)&amp;un, &amp;len)) &lt; 0)
 		return(-1);     /* often errno=EINTR, if signal caught */
 
-	/* obtain the client's uid from its calling address */
+	/* obtain the client&apos;s uid from its calling address */
 	len -= offsetof(struct sockaddr_un, sun_path); /* len of pathname */
 	un.sun_path[len] = 0;           /* null terminate */
 
@@ -109,7 +107,7 @@ int serv_accept(int listenfd, uid_t *uidptr)
 
 	if (uidptr != NULL)
 		*uidptr = statbuf.st_uid;   /* return uid of caller */
-	unlink(un.sun_path);        /* we're done with pathname now */
+	unlink(un.sun_path);        /* we&apos;re done with pathname now */
 	return(clifd);
 
 errout:
@@ -117,14 +115,14 @@ errout:
 	close(clifd);
 	errno = err;
 	return(rval);
-}</pre><p>以下是客户端的connect模块，与网络socket编程不同的是，UNIX Domain Socket客户端一般要显式调用bind函数，而不依赖系统自动分配的地址。客户端bind一个自己指定的socket文件名的好处是，该文件名可以包含客户端的pid以便服务器区分不同的客户端。</p><pre class="programlisting">#include &lt;stdio.h&gt;
+}</pre><p>&#x4EE5;&#x4E0B;&#x662F;&#x5BA2;&#x6237;&#x7AEF;&#x7684;connect&#x6A21;&#x5757;&#xFF0C;&#x4E0E;&#x7F51;&#x7EDC;socket&#x7F16;&#x7A0B;&#x4E0D;&#x540C;&#x7684;&#x662F;&#xFF0C;UNIX Domain Socket&#x5BA2;&#x6237;&#x7AEF;&#x4E00;&#x822C;&#x8981;&#x663E;&#x5F0F;&#x8C03;&#x7528;bind&#x51FD;&#x6570;&#xFF0C;&#x800C;&#x4E0D;&#x4F9D;&#x8D56;&#x7CFB;&#x7EDF;&#x81EA;&#x52A8;&#x5206;&#x914D;&#x7684;&#x5730;&#x5740;&#x3002;&#x5BA2;&#x6237;&#x7AEF;bind&#x4E00;&#x4E2A;&#x81EA;&#x5DF1;&#x6307;&#x5B9A;&#x7684;socket&#x6587;&#x4EF6;&#x540D;&#x7684;&#x597D;&#x5904;&#x662F;&#xFF0C;&#x8BE5;&#x6587;&#x4EF6;&#x540D;&#x53EF;&#x4EE5;&#x5305;&#x542B;&#x5BA2;&#x6237;&#x7AEF;&#x7684;pid&#x4EE5;&#x4FBF;&#x670D;&#x52A1;&#x5668;&#x533A;&#x5206;&#x4E0D;&#x540C;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x3002;</p><pre class="programlisting">#include &lt;stdio.h&gt;
 #include &lt;stddef.h&gt;
 #include &lt;sys/stat.h&gt;
 #include &lt;sys/socket.h&gt;
 #include &lt;sys/un.h&gt;
 #include &lt;errno.h&gt;
 
-#define CLI_PATH    "/var/tmp/"      /* +5 for pid = 14 chars */
+#define CLI_PATH    &quot;/var/tmp/&quot;      /* +5 for pid = 14 chars */
 
 /*
  * Create a client endpoint and connect to a server.
@@ -142,7 +140,7 @@ int cli_conn(const char *name)
 	/* fill socket address structure with our address */
 	memset(&amp;un, 0, sizeof(un));
 	un.sun_family = AF_UNIX;
-	sprintf(un.sun_path, "%s%05d", CLI_PATH, getpid());
+	sprintf(un.sun_path, &quot;%s%05d&quot;, CLI_PATH, getpid());
 	len = offsetof(struct sockaddr_un, sun_path) + strlen(un.sun_path);
 
 	unlink(un.sun_path);        /* in case it already exists */
@@ -151,7 +149,7 @@ int cli_conn(const char *name)
 		goto errout;
 	}
 
-	/* fill socket address structure with server's address */
+	/* fill socket address structure with server&apos;s address */
 	memset(&amp;un, 0, sizeof(un));
 	un.sun_family = AF_UNIX;
 	strcpy(un.sun_path, name);
@@ -167,4 +165,5 @@ errout:
 	close(fd);
 	errno = err;
 	return(rval);
-}</pre><p>下面是自己动手时间，请利用以上模块编写完整的客户端/服务器通讯的程序。</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch37s03.html">上一页</a> </td><td width="20%" align="center"><a accesskey="u" href="ch37.html">上一级</a></td><td width="40%" align="right"> <a accesskey="n" href="ch37s05.html">下一页</a></td></tr><tr><td width="40%" align="left" valign="top">3. 基于UDP协议的网络程序 </td><td width="20%" align="center"><a accesskey="h" href="index.html">起始页</a></td><td width="40%" align="right" valign="top"> 5. 练习：实现简单的Web服务器</td></tr></table></div></body></html>
+}</pre><p>&#x4E0B;&#x9762;&#x662F;&#x81EA;&#x5DF1;&#x52A8;&#x624B;&#x65F6;&#x95F4;&#xFF0C;&#x8BF7;&#x5229;&#x7528;&#x4EE5;&#x4E0A;&#x6A21;&#x5757;&#x7F16;&#x5199;&#x5B8C;&#x6574;&#x7684;&#x5BA2;&#x6237;&#x7AEF;/&#x670D;&#x52A1;&#x5668;&#x901A;&#x8BAF;&#x7684;&#x7A0B;&#x5E8F;&#x3002;</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="ch37s03.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><td width="20%" align="center"><a accesskey="u" href="ch37.html">&#x4E0A;&#x4E00;&#x7EA7;</a></td><td width="40%" align="right">&#xA0;<a accesskey="n" href="ch37s05.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr><tr><td width="40%" align="left" valign="top">3.&#xA0;&#x57FA;&#x4E8E;UDP&#x534F;&#x8BAE;&#x7684;&#x7F51;&#x7EDC;&#x7A0B;&#x5E8F;&#xA0;</td><td width="20%" align="center"><a accesskey="h" href="index.html">&#x8D77;&#x59CB;&#x9875;</a></td><td width="40%" align="right" valign="top">&#xA0;5.&#xA0;&#x7EC3;&#x4E60;&#xFF1A;&#x5B9E;&#x73B0;&#x7B80;&#x5355;&#x7684;Web&#x670D;&#x52A1;&#x5668;</td></tr></tbody></table></div>
+</body></html>

@@ -1,10 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3. 基于UDP协议的网络程序</title><link rel="stylesheet" href="styles.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.73.2" /><link rel="start" href="index.html" title="Linux C编程一站式学习" /><link rel="up" href="ch37.html" title="第 37 章 socket编程" /><link rel="prev" href="ch37s02.html" title="2. 基于TCP协议的网络程序" /><link rel="next" href="ch37s04.html" title="4. UNIX Domain Socket IPC" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. 基于UDP协议的网络程序</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch37s02.html">上一页</a> </td><th width="60%" align="center">第 37 章 socket编程</th><td width="20%" align="right"> <a accesskey="n" href="ch37s04.html">下一页</a></td></tr></table><hr /></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2904144"></a>3. 基于UDP协议的网络程序</h2></div></div></div><p>下图是典型的UDP客户端/服务器通讯过程（该图出自<a class="xref" href="bi01.html#bibli.unp" title="UNIX Network Programming, Volume 1: The Sockets Networking API">[<abbr class="abbrev">UNPv13e</abbr>]</a>）。</p><div class="figure"><a id="id2904159"></a><p class="title"><b>图 37.3. UDP通讯流程</b></p><div class="figure-contents"><div><img src="images/socket.udpflowchart.png" alt="UDP通讯流程" /></div></div></div><br class="figure-break" /><p>以下是简单的UDP服务器和客户端程序。</p><pre class="programlisting">/* server.c */
+<!--?xml version="1.0" encoding="UTF-8" standalone="no"?--><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>3.&#xA0;&#x57FA;&#x4E8E;UDP&#x534F;&#x8BAE;&#x7684;&#x7F51;&#x7EDC;&#x7A0B;&#x5E8F;</title><link rel="stylesheet" href="styles.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.73.2"><link rel="start" href="index.html" title="Linux C&#x7F16;&#x7A0B;&#x4E00;&#x7AD9;&#x5F0F;&#x5B66;&#x4E60;"><link rel="up" href="ch37.html" title="&#x7B2C;&#xA0;37&#xA0;&#x7AE0;&#xA0;socket&#x7F16;&#x7A0B;"><link rel="prev" href="ch37s02.html" title="2.&#xA0;&#x57FA;&#x4E8E;TCP&#x534F;&#x8BAE;&#x7684;&#x7F51;&#x7EDC;&#x7A0B;&#x5E8F;"><link rel="next" href="ch37s04.html" title="4.&#xA0;UNIX Domain Socket IPC"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tbody><tr><th colspan="3" align="center">3.&#xA0;&#x57FA;&#x4E8E;UDP&#x534F;&#x8BAE;&#x7684;&#x7F51;&#x7EDC;&#x7A0B;&#x5E8F;</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch37s02.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><th width="60%" align="center">&#x7B2C;&#xA0;37&#xA0;&#x7AE0;&#xA0;socket&#x7F16;&#x7A0B;</th><td width="20%" align="right">&#xA0;<a accesskey="n" href="ch37s04.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr></tbody></table><hr></div><div class="sect1" lang="zh-cn" xml:lang="zh-cn"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="id2904144"></a>3.&#xA0;&#x57FA;&#x4E8E;UDP&#x534F;&#x8BAE;&#x7684;&#x7F51;&#x7EDC;&#x7A0B;&#x5E8F;</h2></div></div></div><p>&#x4E0B;&#x56FE;&#x662F;&#x5178;&#x578B;&#x7684;UDP&#x5BA2;&#x6237;&#x7AEF;/&#x670D;&#x52A1;&#x5668;&#x901A;&#x8BAF;&#x8FC7;&#x7A0B;&#xFF08;&#x8BE5;&#x56FE;&#x51FA;&#x81EA;<a class="xref" href="bi01.html#bibli.unp" title="UNIX Network Programming, Volume 1: The Sockets Networking API">[<abbr class="abbrev">UNPv13e</abbr>]</a>&#xFF09;&#x3002;</p><div class="figure"><a id="id2904159"></a><p class="title"><b>&#x56FE;&#xA0;37.3.&#xA0;UDP&#x901A;&#x8BAF;&#x6D41;&#x7A0B;</b></p><div class="figure-contents"><div><img src="images/socket.udpflowchart.png" alt="UDP&#x901A;&#x8BAF;&#x6D41;&#x7A0B;"></div></div></div><br class="figure-break"><p>&#x4EE5;&#x4E0B;&#x662F;&#x7B80;&#x5355;&#x7684;UDP&#x670D;&#x52A1;&#x5668;&#x548C;&#x5BA2;&#x6237;&#x7AEF;&#x7A0B;&#x5E8F;&#x3002;</p><pre class="programlisting">/* server.c */
 #include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 #include &lt;netinet/in.h&gt;
-#include "wrap.h"
+#include &quot;wrap.h&quot;
 
 #define MAXLINE 80
 #define SERV_PORT 8000
@@ -27,13 +25,13 @@ int main(void)
     
 	Bind(sockfd, (struct sockaddr *)&amp;servaddr, sizeof(servaddr));
 
-	printf("Accepting connections ...\n");
+	printf(&quot;Accepting connections ...\n&quot;);
 	while (1) {
 		cliaddr_len = sizeof(cliaddr);
 		n = recvfrom(sockfd, buf, MAXLINE, 0, (struct sockaddr *)&amp;cliaddr, &amp;cliaddr_len);
 		if (n == -1)
-			perr_exit("recvfrom error");
-		printf("received from %s at PORT %d\n",
+			perr_exit(&quot;recvfrom error&quot;);
+		printf(&quot;received from %s at PORT %d\n&quot;,
 		       inet_ntop(AF_INET, &amp;cliaddr.sin_addr, str, sizeof(str)),
 		       ntohs(cliaddr.sin_port));
     
@@ -41,14 +39,14 @@ int main(void)
 			buf[i] = toupper(buf[i]);
 		n = sendto(sockfd, buf, n, 0, (struct sockaddr *)&amp;cliaddr, sizeof(cliaddr));
 		if (n == -1)
-			perr_exit("sendto error");
+			perr_exit(&quot;sendto error&quot;);
 	}
 }</pre><pre class="programlisting">/* client.c */
 #include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 #include &lt;unistd.h&gt;
 #include &lt;netinet/in.h&gt;
-#include "wrap.h"
+#include &quot;wrap.h&quot;
 
 #define MAXLINE 80
 #define SERV_PORT 8000
@@ -65,21 +63,22 @@ int main(int argc, char *argv[])
 
 	bzero(&amp;servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
-	inet_pton(AF_INET, "127.0.0.1", &amp;servaddr.sin_addr);
+	inet_pton(AF_INET, &quot;127.0.0.1&quot;, &amp;servaddr.sin_addr);
 	servaddr.sin_port = htons(SERV_PORT);
     
 	while (fgets(buf, MAXLINE, stdin) != NULL) {
 		n = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&amp;servaddr, sizeof(servaddr));
 		if (n == -1)
-			perr_exit("sendto error");
+			perr_exit(&quot;sendto error&quot;);
 
 		n = recvfrom(sockfd, buf, MAXLINE, 0, NULL, 0);
 		if (n == -1)
-			perr_exit("recvfrom error");
+			perr_exit(&quot;recvfrom error&quot;);
 	  
 		Write(STDOUT_FILENO, buf, n);
 	}
 
 	Close(sockfd);
 	return 0;
-}</pre><p>由于UDP不需要维护连接，程序逻辑简单了很多，但是UDP协议是不可靠的，实际上有很多保证通讯可靠性的机制需要在应用层实现。</p><p>编译运行server，在两个终端里各开一个client与server交互，看看server是否具有并发服务的能力。用Ctrl+C关闭server，然后再运行server，看此时client还能否和server联系上。和前面TCP程序的运行结果相比较，体会无连接的含义。</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch37s02.html">上一页</a> </td><td width="20%" align="center"><a accesskey="u" href="ch37.html">上一级</a></td><td width="40%" align="right"> <a accesskey="n" href="ch37s04.html">下一页</a></td></tr><tr><td width="40%" align="left" valign="top">2. 基于TCP协议的网络程序 </td><td width="20%" align="center"><a accesskey="h" href="index.html">起始页</a></td><td width="40%" align="right" valign="top"> 4. UNIX Domain Socket IPC</td></tr></table></div></body></html>
+}</pre><p>&#x7531;&#x4E8E;UDP&#x4E0D;&#x9700;&#x8981;&#x7EF4;&#x62A4;&#x8FDE;&#x63A5;&#xFF0C;&#x7A0B;&#x5E8F;&#x903B;&#x8F91;&#x7B80;&#x5355;&#x4E86;&#x5F88;&#x591A;&#xFF0C;&#x4F46;&#x662F;UDP&#x534F;&#x8BAE;&#x662F;&#x4E0D;&#x53EF;&#x9760;&#x7684;&#xFF0C;&#x5B9E;&#x9645;&#x4E0A;&#x6709;&#x5F88;&#x591A;&#x4FDD;&#x8BC1;&#x901A;&#x8BAF;&#x53EF;&#x9760;&#x6027;&#x7684;&#x673A;&#x5236;&#x9700;&#x8981;&#x5728;&#x5E94;&#x7528;&#x5C42;&#x5B9E;&#x73B0;&#x3002;</p><p>&#x7F16;&#x8BD1;&#x8FD0;&#x884C;server&#xFF0C;&#x5728;&#x4E24;&#x4E2A;&#x7EC8;&#x7AEF;&#x91CC;&#x5404;&#x5F00;&#x4E00;&#x4E2A;client&#x4E0E;server&#x4EA4;&#x4E92;&#xFF0C;&#x770B;&#x770B;server&#x662F;&#x5426;&#x5177;&#x6709;&#x5E76;&#x53D1;&#x670D;&#x52A1;&#x7684;&#x80FD;&#x529B;&#x3002;&#x7528;Ctrl+C&#x5173;&#x95ED;server&#xFF0C;&#x7136;&#x540E;&#x518D;&#x8FD0;&#x884C;server&#xFF0C;&#x770B;&#x6B64;&#x65F6;client&#x8FD8;&#x80FD;&#x5426;&#x548C;server&#x8054;&#x7CFB;&#x4E0A;&#x3002;&#x548C;&#x524D;&#x9762;TCP&#x7A0B;&#x5E8F;&#x7684;&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x76F8;&#x6BD4;&#x8F83;&#xFF0C;&#x4F53;&#x4F1A;&#x65E0;&#x8FDE;&#x63A5;&#x7684;&#x542B;&#x4E49;&#x3002;</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tbody><tr><td width="40%" align="left"><a accesskey="p" href="ch37s02.html">&#x4E0A;&#x4E00;&#x9875;</a>&#xA0;</td><td width="20%" align="center"><a accesskey="u" href="ch37.html">&#x4E0A;&#x4E00;&#x7EA7;</a></td><td width="40%" align="right">&#xA0;<a accesskey="n" href="ch37s04.html">&#x4E0B;&#x4E00;&#x9875;</a></td></tr><tr><td width="40%" align="left" valign="top">2.&#xA0;&#x57FA;&#x4E8E;TCP&#x534F;&#x8BAE;&#x7684;&#x7F51;&#x7EDC;&#x7A0B;&#x5E8F;&#xA0;</td><td width="20%" align="center"><a accesskey="h" href="index.html">&#x8D77;&#x59CB;&#x9875;</a></td><td width="40%" align="right" valign="top">&#xA0;4.&#xA0;UNIX Domain Socket IPC</td></tr></tbody></table></div>
+</body></html>
